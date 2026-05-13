@@ -1,0 +1,372 @@
+{
+  "data101.vrp": {
+    "problem_name": "data101.vrp",
+    "num_clients": 100,
+    "capacity": 200,
+    "genetic_algorithm": {
+      "execution_time": 22.222974061965942,
+      "distance": 5991.267800924397,
+      "num_vehicles": 59,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 5991.267800924397,
+        "num_vehicles": 59,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.1602542372881356,
+        "unassigned_clients": 33,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    },
+    "tabu_search": {
+      "execution_time": 0.839087724685669,
+      "distance": 253.45875796025868,
+      "num_vehicles": 4,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 253.45875796025868,
+        "num_vehicles": 4,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.04625,
+        "unassigned_clients": 96,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data102.vrp": {
+    "problem_name": "data102.vrp",
+    "num_clients": 100,
+    "capacity": 200,
+    "genetic_algorithm": {
+      "execution_time": 29.547481060028076,
+      "distance": 9075.380864625267,
+      "num_vehicles": 84,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 9075.380864625267,
+        "num_vehicles": 84,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.3427976190476191,
+        "unassigned_clients": 5,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    },
+    "tabu_search": {
+      "execution_time": 1.89137601852417,
+      "distance": 568.7990060501998,
+      "num_vehicles": 8,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 568.7990060501998,
+        "num_vehicles": 8,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.2875,
+        "unassigned_clients": 71,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data1101.vrp": {
+    "problem_name": "data1101.vrp",
+    "num_clients": 100,
+    "capacity": 200,
+    "genetic_algorithm": {
+      "execution_time": 25.17081594467163,
+      "distance": 9695.971851695784,
+      "num_vehicles": 78,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 9695.971851695784,
+        "num_vehicles": 78,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.35000000000000003,
+        "unassigned_clients": 3,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    },
+    "tabu_search": {
+      "execution_time": 0.9186818599700928,
+      "distance": 608.8858781990684,
+      "num_vehicles": 8,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 608.8858781990684,
+        "num_vehicles": 8,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.09062500000000001,
+        "unassigned_clients": 90,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data1102.vrp": {
+    "problem_name": "data1102.vrp",
+    "num_clients": 100,
+    "capacity": 200,
+    "genetic_algorithm": {
+      "execution_time": 21.466504335403442,
+      "distance": 5853.471200975957,
+      "num_vehicles": 44,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 5853.471200975957,
+        "num_vehicles": 44,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.3271590909090909,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 1.975031852722168,
+      "distance": 918.0354309712565,
+      "num_vehicles": 10,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 918.0354309712565,
+        "num_vehicles": 10,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.2925,
+        "unassigned_clients": 65,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data111.vrp": {
+    "problem_name": "data111.vrp",
+    "num_clients": 100,
+    "capacity": 200,
+    "genetic_algorithm": {
+      "execution_time": 19.48964548110962,
+      "distance": 2793.494866492686,
+      "num_vehicles": 25,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 2793.494866492686,
+        "num_vehicles": 25,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.3668,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 2.2536518573760986,
+      "distance": 908.208201276756,
+      "num_vehicles": 12,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 908.208201276756,
+        "num_vehicles": 12,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.29375,
+        "unassigned_clients": 55,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data112.vrp": {
+    "problem_name": "data112.vrp",
+    "num_clients": 100,
+    "capacity": 200,
+    "genetic_algorithm": {
+      "execution_time": 19.278337478637695,
+      "distance": 1728.4905965486464,
+      "num_vehicles": 18,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 1728.4905965486464,
+        "num_vehicles": 18,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.4361111111111111,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 3.870015859603882,
+      "distance": 1230.2348853136668,
+      "num_vehicles": 14,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 1230.2348853136668,
+        "num_vehicles": 14,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.3614285714285715,
+        "unassigned_clients": 33,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data1201.vrp": {
+    "problem_name": "data1201.vrp",
+    "num_clients": 100,
+    "capacity": 1000,
+    "genetic_algorithm": {
+      "execution_time": 36.400588035583496,
+      "distance": 6065.51837491336,
+      "num_vehicles": 12,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 6065.51837491336,
+        "num_vehicles": 12,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.19766666666666666,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 1.0742464065551758,
+      "distance": 318.2047497798568,
+      "num_vehicles": 3,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 318.2047497798568,
+        "num_vehicles": 3,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.041666666666666664,
+        "unassigned_clients": 92,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data1202.vrp": {
+    "problem_name": "data1202.vrp",
+    "num_clients": 100,
+    "capacity": 1000,
+    "genetic_algorithm": {
+      "execution_time": 39.74211764335632,
+      "distance": 5806.966458459196,
+      "num_vehicles": 14,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 5806.966458459196,
+        "num_vehicles": 14,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.17264285714285715,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 4.477397203445435,
+      "distance": 873.7573873628052,
+      "num_vehicles": 9,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 873.7573873628052,
+        "num_vehicles": 9,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.058222222222222224,
+        "unassigned_clients": 67,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data201.vrp": {
+    "problem_name": "data201.vrp",
+    "num_clients": 100,
+    "capacity": 1000,
+    "genetic_algorithm": {
+      "execution_time": 41.81108236312866,
+      "distance": 4077.3159755993415,
+      "num_vehicles": 9,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 4077.3159755993415,
+        "num_vehicles": 9,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.21811111111111112,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 1.1486811637878418,
+      "distance": 331.3960521348255,
+      "num_vehicles": 3,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 331.3960521348255,
+        "num_vehicles": 3,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.04566666666666667,
+        "unassigned_clients": 91,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  },
+  "data202.vrp": {
+    "problem_name": "data202.vrp",
+    "num_clients": 100,
+    "capacity": 1000,
+    "genetic_algorithm": {
+      "execution_time": 46.586227893829346,
+      "distance": 4821.070110903209,
+      "num_vehicles": 11,
+      "is_feasible": true,
+      "solution_stats": {
+        "distance": 4821.070110903209,
+        "num_vehicles": 11,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.22,
+        "unassigned_clients": 0,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": true
+      }
+    },
+    "tabu_search": {
+      "execution_time": 3.524289131164551,
+      "distance": 541.5699221297823,
+      "num_vehicles": 6,
+      "is_feasible": false,
+      "solution_stats": {
+        "distance": 541.5699221297823,
+        "num_vehicles": 6,
+        "num_empty_vehicles": 0,
+        "avg_load_utilization": 0.09316666666666666,
+        "unassigned_clients": 66,
+        "infeasible_routes": 0,
+        "capacity_violations": 0,
+        "is_feasible": false
+      }
+    }
+  }
+}
