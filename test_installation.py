@@ -101,7 +101,7 @@ def test_solution_generation():
             ("Random", SolutionGenerator.generate_random_solution),
             ("Nearest Neighbor", SolutionGenerator.nearest_neighbor),
             ("Greedy Insertion", SolutionGenerator.greedy_insertion),
-            ("Clarke-Wright", SolutionGenerator.savings_algorithm),
+
         ]
 
         all_generated = True

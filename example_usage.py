@@ -163,8 +163,7 @@ def example_4_initial_solutions():
             problem.depot, problem.clients, problem.capacity)),
         ("Greedy Insertion", lambda: SolutionGenerator.greedy_insertion(
             problem.depot, problem.clients, problem.capacity)),
-        ("Clarke-Wright", lambda: SolutionGenerator.savings_algorithm(
-            problem.depot, problem.clients, problem.capacity)),
+
     ]
 
     print(f"\n{'Method':<25} {'Distance':<15} {'Vehicles':<12} {'Feasible':<10}")

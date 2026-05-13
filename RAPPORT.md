@@ -1,6 +1,6 @@
 # RAPPORT - Optimisation Discrète : Vehicle Routing Problem with Time Windows
 
-**Auteurs:** Thibault LARACINE, Louka PESIC  
+**Auteurs:** Thibaut LARACINE, Louka PESIC  
 **Date:** Juin 2024  
 **Cours:** Optimisation Discrète - Filière Informatique  
 **Professeur:** Stéphane Bonnevay - Polytech Lyon
@@ -126,6 +126,8 @@ Une bonne solution initiale est cruciale pour les métaheuristiques :
 
 ### 3.2 Méthodes implémentées
 
+Nous avons implémenté 3 heuristiques de construction pour générer les solutions initiales.
+
 #### 3.2.1 Générateur aléatoire
 
 ```python
@@ -175,23 +177,6 @@ def greedy_insertion_solution():
 
 **Exemple résultat :** Distance = 501.06, Véhicules = 4 (data101)
 
-#### 3.2.4 Clarke-Wright (Fusion de routes)
-
-```python
-def clarke_wright_solution():
-    """Utilise l'algorithme d'économies de Clarke-Wright."""
-    # Calcule les économies pour chaque paire de clients
-    # Fusionne progressivement les meilleures paires
-```
-
-**Algorithme :**
-1. Créer une route par client (depuis le dépôt)
-2. Calculer les économies pour toutes les paires : $s_{ij} = d_{0i} + d_{0j} - d_{ij}$
-3. Trier les économies en ordre décroissant
-4. Pour chaque économie :
-   - Fusionner les deux routes si c'est possible (compatibilité, capacité)
-
-**Exemple résultat :** Distance = 4583.01, Véhicules = 87 (data101) - performant mais génère trop de routes
 
 ### 3.3 Sélection de la méthode initiale
 
@@ -845,6 +830,34 @@ TS converge très vite (plateauing après iter 200)
 
 ### 8.5 Impact des contraintes de temps
 
+### 8.6 Analyse de la Faisabilité : Pourquoi TS échoue et GA réussit
+
+Un des résultats les plus frappants de nos expériences est la différence drastique de faisabilité entre les deux algorithmes : **GA a atteint 60% de solutions faisables, contre 0% pour TS**. Cette section explique les raisons fondamentales de cet écart.
+
+#### 8.6.1 La faiblesse de la Recherche Tabou : L'optimum local infaisable
+
+La recherche Tabou, dans notre implémentation, est une méthode de **recherche locale**. Elle part d'une solution unique et l'améliore itérativement en explorant son voisinage immédiat. Cette approche présente des faiblesses majeures pour les problèmes fortement contraints comme le VRPTW :
+
+1.  **Piégée par le point de départ** : TS est très sensible à la qualité de sa solution initiale. Si celle-ci est loin d'une région faisable, il est très difficile pour l'algorithme de s'en approcher par de petites modifications successives (comme `2-opt` ou `relocate`).
+
+2.  **Myopie de l'optimisation locale** : La fonction de fitness pénalise les clients non assignés. Cependant, l'algorithme peut trouver un "optimum local" où le coût pour insérer un client difficile (qui nécessiterait une réorganisation majeure d'une route) est perçu comme plus élevé que la pénalité pour le laisser non assigné. L'algorithme choisit donc la voie de la "facilité" : il optimise parfaitement une solution **incomplète**.
+
+3.  **Manque de vision globale** : TS n'a aucun mécanisme pour faire de grands "sauts" dans l'espace de recherche. Il ne peut pas, par exemple, déconstruire et reconstruire plusieurs routes simultanément pour faire de la place à un client.
+
+En résumé, **la recherche Tabou est un excellent optimiseur local mais un mauvais explorateur global**. Elle trouve une solution très performante pour un sous-ensemble de clients et se retrouve piégée, incapable d'atteindre la faisabilité complète.
+
+#### 8.6.2 La force de l'Algorithme Génétique : L'exploration globale
+
+L'algorithme génétique, à l'inverse, est nativement conçu pour l'exploration. Plusieurs de ses mécanismes lui permettent de surmonter les défis où TS échoue :
+
+1.  **La puissance de la population** : Le GA maintient une population de 50 solutions en parallèle. Cette diversité est sa plus grande force. Même si certaines solutions sont piégées dans des optima locaux, d'autres explorent des régions complètement différentes de l'espace de recherche.
+
+2.  **Le croisement comme moteur de "grands sauts"** : C'est l'opérateur clé. Le GA peut prendre une solution A qui sert bien les clients {1...50} et une solution B qui sert bien les clients {51...100}. L'opérateur de croisement peut **combiner les "bons gènes"** (ici, les routes ou séquences de clients) de ces deux parents pour créer un enfant qui sert potentiellement tous les clients {1...100}. Cette capacité à combiner des solutions partielles est quelque chose que la recherche Tabou ne peut absolument pas faire.
+
+3.  **Pression de sélection vers la faisabilité** : La fonction de pénalité, dans un contexte évolutif, pousse l'ensemble de la population vers la faisabilité. Au fil des générations, les solutions qui parviennent à servir plus de clients (même si leur distance est initialement plus grande) ont un meilleur score de fitness. La sélection naturelle favorise donc mécaniquement les solutions qui s'approchent de la faisabilité.
+
+En conclusion, la nature exploratoire et parallèle du GA le rend beaucoup plus apte à naviguer dans les paysages de recherche complexes et contraints du VRPTW pour trouver des solutions complètes et faisables.
+
 **Mode VRPTW (avec fenêtres de temps) :**
 - GA peut construire solutions avec fenêtres respectées
 - TS a beaucoup de mal (solution initiale Nearest Neighbor)
@@ -1110,7 +1123,50 @@ else:
 
 ---
 
-## Annexe : Exécution et reproduction
+## 12. Amélioration de la Faisabilité : Large Neighborhood Search et Restauration
+
+Suite à l'analyse des premiers résultats (Section 8.6), qui a montré que la Recherche Tabou était incapable de produire des solutions faisables, nous avons implémenté une seconde version de nos algorithmes intégrant des stratégies plus puissantes pour la gestion des contraintes.
+
+L'objectif est de donner à nos algorithmes la capacité de s'échapper des optima locaux infaisables et de forcer l'insertion des clients non-assignés.
+
+### 12.1 Nouvelles stratégies implémentées
+
+Nous avons introduit deux opérateurs avancés, inspirés de la littérature sur le VRPTW, dans un nouveau fichier `src/feasibility_operators.py`.
+
+#### 12.1.1 Large Neighborhood Search (LNS)
+
+Le **LNS** est une métaheuristique qui se situe entre la recherche locale simple et des approches plus globales comme les algorithmes génétiques. Son principe est le suivant :
+
+1.  **Phase de "destruction"** : On sélectionne une partie de la solution (par exemple, 30% des clients) et on la "détruit", c'est-à-dire qu'on retire ces clients de leurs routes actuelles.
+2.  **Phase de "réparation"** : On réinsère les clients retirés dans la solution en utilisant une heuristique gourmande (comme la meilleure insertion).
+
+Cet opérateur permet de faire des "sauts" beaucoup plus grands dans l'espace de recherche qu'un simple `2-opt` ou `relocate`, lui donnant la capacité de réorganiser en profondeur la structure des routes pour trouver des configurations faisables.
+
+Nous l'utilisons de deux manières :
+-   Dans **l'algorithme génétique**, comme une forme de **mutation puissante** appliquée avec une faible probabilité.
+-   Dans la **recherche Tabou**, comme un mécanisme de **diversification** lorsque l'algorithme est bloqué.
+
+#### 12.1.2 Feasibility Restorer (Restaurateur de faisabilité)
+
+Cet opérateur a un seul objectif : **rendre une solution faisable**. Il prend une solution en entrée, identifie tous les clients non assignés, et tente de les insérer de force dans la solution, en créant de nouvelles routes si nécessaire.
+
+Contrairement aux autres opérateurs, il ne se soucie pas de l'augmentation de la distance. Son seul critère de succès est de réduire le nombre de clients non assignés.
+
+Nous l'utilisons périodiquement dans les deux algorithmes pour "nettoyer" les solutions prometteuses mais encore infaisables.
+
+### 12.2 Intégration dans les algorithmes
+
+#### 12.2.1 Algorithme Génétique
+
+-   **Mutation hybride** : La mutation a désormais une probabilité d'appliquer soit un opérateur de voisinage simple (comme avant), soit l'opérateur LNS pour une exploration plus large.
+-   **Phase de restauration** : À la fin de chaque génération, nous appliquons le `FeasibilityRestorer` sur un sous-ensemble des meilleures solutions infaisables pour tenter de les "réparer" et d'accélérer la convergence vers la faisabilité.
+
+#### 12.2.2 Recherche Tabou
+
+-   **Diversification par LNS** : L'ancienne stratégie de diversification (générer une nouvelle solution aléatoire) est remplacée par l'application de LNS sur la meilleure solution trouvée jusqu'à présent. C'est une manière beaucoup plus intelligente de redémarrer la recherche depuis une région prometteuse.
+-   **Intensification de la faisabilité** : Périodiquement, l'algorithme applique le `FeasibilityRestorer` sur la meilleure solution pour tenter de la rendre complète.
+
+Ces modifications visent à donner à la recherche Tabou les outils qui lui manquaient pour explorer l'espace de recherche de manière plus globale et pour gérer activement les contraintes, plutôt que de simplement les subir via une fonction de pénalité.
 
 ### Compiler et exécuter
 

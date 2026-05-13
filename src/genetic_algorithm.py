@@ -5,6 +5,7 @@ from models import Client, Depot, Route, Solution
 from distance_utils import DistanceCalculator, SolutionEvaluator
 from solution_generator import SolutionGenerator
 from neighborhood import NeighborhoodManager
+from feasibility_operators import LargeNeighborhoodSearch, FeasibilityRestorer
 
 
 class GeneticAlgorithm:
@@ -62,6 +63,8 @@ class GeneticAlgorithm:
         self.best_fitness: float = float('inf')
 
         self.neighborhood_manager = NeighborhoodManager()
+        self.lns_operator = LargeNeighborhoodSearch(destruction_rate=0.25)
+        self.feasibility_restorer = FeasibilityRestorer()
         self.generation_history = []
 
     def initialize_population(self) -> None:
@@ -88,12 +91,7 @@ class GeneticAlgorithm:
                     self.depot, self.clients, self.capacity,
                     ignore_time_windows=self.ignore_time_windows
                 )
-            else:
-                # Savings algorithm (Clarke-Wright)
-                solution = SolutionGenerator.savings_algorithm(
-                    self.depot, self.clients, self.capacity,
-                    ignore_time_windows=self.ignore_time_windows
-                )
+
 
             self.population.append(solution)
 

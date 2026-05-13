@@ -4,7 +4,8 @@ from typing import List, Tuple, Optional, Set
 from models import Client, Depot, Solution
 from distance_utils import DistanceCalculator, SolutionEvaluator
 from solution_generator import SolutionGenerator
-from neighborhood import NeighborhoodManager, TwoOpt, OrOpt, Relocate, CrossExchange, TwoOptBetweenRoutes
+from neighborhood import NeighborhoodManager
+from feasibility_operators import LargeNeighborhoodSearch, FeasibilityRestorer
 
 
 class TabuAttribute:
@@ -75,6 +76,8 @@ class TabuSearch:
         self.tabu_list: List[TabuAttribute] = []
         self.iteration = 0
         self.neighborhood_manager = NeighborhoodManager()
+        self.lns_operator = LargeNeighborhoodSearch(destruction_rate=0.3)
+        self.feasibility_restorer = FeasibilityRestorer()
 
         self.iteration_history = []
         self.best_history = []
