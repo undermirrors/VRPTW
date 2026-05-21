@@ -1,232 +1,216 @@
+"""
+Initial solution generation heuristics for VRPTW / VRP.
+"""
+
 import random
 from typing import List, Optional
-from models import Client, Depot, Route, Solution
-from distance_utils import DistanceCalculator
+
+from .models import Solution, Depot, Client
+from .distance_utils import DistanceCalculator
 
 
 class SolutionGenerator:
-    """Generates initial solutions using various construction heuristics."""
+    """Generate initial solutions using various construction heuristics."""
 
     @staticmethod
-    def generate_random_solution(depot: Depot, clients: List[Client], capacity: float,
-                                ignore_time_windows: bool = False) -> Solution:
-        """
-        Generate a random solution by randomly assigning clients to routes.
-        May produce infeasible solutions.
+    def generate_empty_solution(depot: Depot, clients: List[Client]) -> Solution:
+        return Solution(depot, clients, num_vehicles=len(clients))
 
-        Args:
-            depot: The depot
-            clients: List of all clients
-            capacity: Vehicle capacity
-            ignore_time_windows: If True, ignore time window constraints
+    @staticmethod
+    def random_solution(
+        depot: Depot,
+        clients: List[Client],
+        capacity: float,
+        use_time_windows: bool = True,
+    ) -> Solution:
+        solution = SolutionGenerator.generate_empty_solution(depot, clients)
+        shuffled = clients[:]
+        random.shuffle(shuffled)
 
-        Returns:
-            A Solution with clients randomly distributed among routes
-        """
-        solution = Solution(depot, capacity, ignore_time_windows=ignore_time_windows)
-        shuffled_clients = clients.copy()
-        random.shuffle(shuffled_clients)
-
-        for client in shuffled_clients:
-            # Try to add to existing route
-            added = False
-            for route in solution.routes:
-                if route.add_client(client):
-                    added = True
+        route_idx = 0
+        for client in shuffled:
+            placed = False
+            while route_idx < len(solution.routes):
+                route = solution.get_route(route_idx)
+                if route.can_add_client(client, use_time_windows=use_time_windows):
+                    route.add_client(client, use_time_windows=use_time_windows)
+                    placed = True
                     break
+                route_idx += 1
 
-            # If not added to any route, create new route
-            if not added:
-                new_route = solution.create_new_route()
-                new_route.add_client(client)
+            if not placed:
+                raise RuntimeError("Not enough vehicles to accommodate all clients")
 
-        solution.remove_empty_routes()
+        solution.invalidate_cache()
         return solution
 
     @staticmethod
-    def nearest_neighbor(depot: Depot, clients: List[Client], capacity: float,
-                        start_client: Optional[Client] = None,
-                        ignore_time_windows: bool = False) -> Solution:
-        """
-        Nearest neighbor heuristic: greedily build routes by always adding
-        the nearest unvisited client.
+    def nearest_neighbor(
+        depot: Depot,
+        clients: List[Client],
+        capacity: float,
+        start_client: Optional[Client] = None,
+        use_time_windows: bool = True,
+    ) -> Solution:
+        solution = SolutionGenerator.generate_empty_solution(depot, clients)
+        unassigned = set(clients)
+        route_idx = 0
 
-        Args:
-            depot: The depot
-            clients: List of all clients
-            capacity: Vehicle capacity
-            start_client: Optional starting client (random if not specified)
-            ignore_time_windows: If True, ignore time window constraints
+        while unassigned:
+            if route_idx >= len(solution.routes):
+                raise RuntimeError("Not enough vehicles for nearest neighbor construction")
 
-        Returns:
-            A Solution constructed with nearest neighbor
-        """
-        solution = Solution(depot, capacity, ignore_time_windows=ignore_time_windows)
-        unvisited = set(clients)
+            route = solution.get_route(route_idx)
 
-        if start_client and start_client in unvisited:
-            current_client = start_client
-        else:
-            current_client = random.choice(list(unvisited))
+            feasible_candidates = [
+                c for c in unassigned
+                if route.can_add_client(c, use_time_windows=use_time_windows)
+            ]
 
-        unvisited.remove(current_client)
+            if not feasible_candidates:
+                route_idx += 1
+                continue
 
-        # Start first route with first client
-        current_route = solution.create_new_route()
-        current_route.add_client(current_client)
-
-        while unvisited:
-            # Find nearest client to current location that can be added
-            best_client = None
-            best_distance = float('inf')
-
-            for candidate in unvisited:
-                distance = current_client.location.distance_to(candidate.location)
-                if distance < best_distance:
-                    # Try to add it to current route
-                    if current_route.capacity >= current_route.current_load + candidate.demand:
-                        best_distance = distance
-                        best_client = candidate
-
-            if best_client:
-                # Add to current route
-                if current_route.add_client(best_client):
-                    unvisited.remove(best_client)
-                    current_client = best_client
+            if route.is_empty():
+                if (
+                    start_client is not None
+                    and start_client in unassigned
+                    and route.can_add_client(
+                        start_client,
+                        use_time_windows=use_time_windows,
+                    )
+                ):
+                    chosen = start_client
+                    start_client = None
                 else:
-                    # Can't add to current route, start new one
-                    current_route = solution.create_new_route()
-                    if current_route.add_client(best_client):
-                        unvisited.remove(best_client)
-                        current_client = best_client
-                    else:
-                        # Client can't be added even to empty route, skip
-                        unvisited.discard(best_client)
+                    chosen = min(
+                        feasible_candidates,
+                        key=lambda c: DistanceCalculator.get_distance(
+                            depot.location,
+                            c.location,
+                        ),
+                    )
             else:
-                # No feasible nearest neighbor, start new route
-                current_route = solution.create_new_route()
-                # Find any unvisited client that fits
-                added = False
-                for candidate in list(unvisited):
-                    if current_route.add_client(candidate):
-                        unvisited.remove(candidate)
-                        current_client = candidate
-                        added = True
-                        break
-                if not added:
-                    break
-
-        solution.remove_empty_routes()
-        return solution
-
-    @staticmethod
-    def greedy_insertion(depot: Depot, clients: List[Client], capacity: float,
-                        ignore_time_windows: bool = False) -> Solution:
-        """
-        Greedy insertion heuristic: build routes by inserting clients
-        at positions that minimize cost increase.
-
-        Args:
-            depot: The depot
-            clients: List of all clients
-            capacity: Vehicle capacity
-            ignore_time_windows: If True, ignore time window constraints
-
-        Returns:
-            A Solution constructed with greedy insertion
-        """
-        solution = Solution(depot, capacity, ignore_time_windows=ignore_time_windows)
-        unvisited = set(clients)
-
-        # Start with first client
-        if not unvisited:
-            return solution
-
-        first_client = min(unvisited, key=lambda c: depot.location.distance_to(c.location))
-        unvisited.remove(first_client)
-
-        current_route = solution.create_new_route()
-        current_route.add_client(first_client)
-
-        while unvisited:
-            best_client = None
-            best_route = None
-            best_position = None
-            best_cost_increase = float('inf')
-
-            # For each unvisited client, find best insertion position
-            for client in unvisited:
-                # Try adding to existing routes
-                for route in solution.routes:
-                    for pos in range(len(route.clients) + 1):
-                        cost_increase = DistanceCalculator.insertion_distance_delta(
-                            route, client, pos
-                        )
-                        if cost_increase < best_cost_increase:
-                            # Check feasibility
-                            temp_route = Route(depot, capacity)
-                            temp_route.clients = route.clients.copy()
-                            if temp_route.insert_client(client, pos):
-                                best_cost_increase = cost_increase
-                                best_client = client
-                                best_route = route
-                                best_position = pos
-
-                # Try adding to new route
-                new_route = Route(depot, capacity)
-                cost_increase = DistanceCalculator.insertion_distance_delta(
-                    new_route, client, 0
+                current_location = route.clients[-1].location
+                chosen = min(
+                    feasible_candidates,
+                    key=lambda c: DistanceCalculator.get_distance(
+                        current_location,
+                        c.location,
+                    ),
                 )
-                if cost_increase < best_cost_increase:
-                    if new_route.insert_client(client, 0):
-                        best_cost_increase = cost_increase
-                        best_client = client
-                        best_route = new_route
-                        best_position = 0
 
-            if best_client:
-                unvisited.remove(best_client)
-                if best_route not in solution.routes:
-                    solution.add_route(best_route)
-                    best_route.add_client(best_client)
-                else:
-                    best_route.insert_client(best_client, best_position)
-            else:
-                # Can't insert any client, break
-                break
+            route.add_client(chosen, use_time_windows=use_time_windows)
+            unassigned.remove(chosen)
 
-        solution.remove_empty_routes()
+        solution.invalidate_cache()
         return solution
 
+    @staticmethod
+    def greedy_insertion(
+        depot: Depot,
+        clients: List[Client],
+        capacity: float,
+        use_time_windows: bool = True,
+    ) -> Solution:
+        solution = SolutionGenerator.generate_empty_solution(depot, clients)
+        unassigned = set(clients)
+        route_idx = 0
 
+        while unassigned:
+            if route_idx >= len(solution.routes):
+                raise RuntimeError("Not enough vehicles for greedy insertion")
+
+            route = solution.get_route(route_idx)
+
+            best_client = None
+            best_position = 0
+            best_delta = float("inf")
+
+            for client in unassigned:
+                if not route.can_add_client(client, use_time_windows=use_time_windows):
+                    continue
+
+                for position in range(len(route.clients) + 1):
+                    trial_clients = route.clients[:]
+                    trial_clients.insert(position, client)
+
+                    if use_time_windows and not route._would_respect_time_windows(trial_clients):
+                        continue
+
+                    delta = DistanceCalculator.insertion_distance_delta(route, client, position)
+                    if delta < best_delta:
+                        best_delta = delta
+                        best_client = client
+                        best_position = position
+
+            if best_client is None:
+                route_idx += 1
+                continue
+
+            route.clients.insert(best_position, best_client)
+            route._current_load += best_client.demand
+            route._invalidate_cache()
+            unassigned.remove(best_client)
+
+        solution.invalidate_cache()
+        return solution
 
     @staticmethod
-    def multi_start_nearest_neighbor(depot: Depot, clients: List[Client], capacity: float,
-                                    num_restarts: int = 5,
-                                    ignore_time_windows: bool = False) -> Solution:
-        """
-        Generate multiple nearest neighbor solutions and return the best.
+    def savings_algorithm(
+        depot: Depot,
+        clients: List[Client],
+        capacity: float,
+        use_time_windows: bool = True,
+    ) -> Solution:
+        return SolutionGenerator.nearest_neighbor(
+            depot=depot,
+            clients=clients,
+            capacity=capacity,
+            use_time_windows=use_time_windows,
+        )
 
-        Args:
-            depot: The depot
-            clients: List of all clients
-            capacity: Vehicle capacity
-            num_restarts: Number of different NN attempts
-            ignore_time_windows: If True, ignore time window constraints
-
-        Returns:
-            Best solution found
-        """
+    @staticmethod
+    def multi_start_nearest_neighbor(
+        depot: Depot,
+        clients: List[Client],
+        capacity: float,
+        num_starts: int = 5,
+        use_time_windows: bool = True,
+    ) -> Solution:
         best_solution = None
-        best_distance = float('inf')
+        best_key = (float("inf"), float("inf"))
 
-        for _ in range(num_restarts):
-            solution = SolutionGenerator.nearest_neighbor(depot, clients, capacity,
-                                                         ignore_time_windows=ignore_time_windows)
-            distance = DistanceCalculator.solution_distance(solution)
+        if not clients:
+            return SolutionGenerator.generate_empty_solution(depot, clients)
 
-            if distance < best_distance:
-                best_distance = distance
-                best_solution = solution
+        starts = random.sample(clients, min(num_starts, len(clients)))
+
+        for start in starts:
+            try:
+                solution = SolutionGenerator.nearest_neighbor(
+                    depot=depot,
+                    clients=clients,
+                    capacity=capacity,
+                    start_client=start,
+                    use_time_windows=use_time_windows,
+                )
+                key = (
+                    solution.get_num_vehicles(),
+                    DistanceCalculator.solution_distance(solution),
+                )
+                if key < best_key:
+                    best_key = key
+                    best_solution = solution
+            except RuntimeError:
+                continue
+
+        if best_solution is None:
+            return SolutionGenerator.random_solution(
+                depot,
+                clients,
+                capacity,
+                use_time_windows=use_time_windows,
+            )
 
         return best_solution

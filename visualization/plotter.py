@@ -5,7 +5,11 @@ import numpy as np
 from typing import List, Optional, Tuple
 import os
 
-from models import Solution, Route, Client, Depot
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from src.models import Solution, Route, Client, Depot
 
 
 class RouteVisualizer:

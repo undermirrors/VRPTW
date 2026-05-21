@@ -1,325 +1,320 @@
+"""
+Data models for VRPTW problem.
+"""
+
 from dataclasses import dataclass
 from typing import List, Optional
 import math
 
 
-@dataclass
+@dataclass(slots=True)
 class Location:
-    """Represents a geographic location with coordinates."""
+    """Represents a geographical location with coordinates."""
     x: float
     y: float
 
-    def distance_to(self, other: 'Location') -> float:
-        """Calculate Euclidean distance to another location."""
-        return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
+    def distance_to(self, other: "Location") -> float:
+        dx = self.x - other.x
+        dy = self.y - other.y
+        return math.sqrt(dx * dx + dy * dy)
 
 
-@dataclass
+@dataclass(slots=True)
 class TimeWindow:
-    """Represents a time window [ready_time, due_time]."""
+    """Represents time window constraints [ready_time, due_time]."""
     ready_time: float
     due_time: float
 
-    def is_time_feasible(self, arrival_time: float) -> bool:
-        """Check if arrival time satisfies the time window constraint."""
+    def __post_init__(self):
+        if self.ready_time > self.due_time:
+            raise ValueError(
+                f"Ready time {self.ready_time} cannot be after due time {self.due_time}"
+            )
+
+    def is_time_valid(self, arrival_time: float) -> bool:
         return self.ready_time <= arrival_time <= self.due_time
 
-    def get_waiting_time(self, arrival_time: float) -> float:
-        """Calculate waiting time if arriving before ready_time."""
-        if arrival_time < self.ready_time:
-            return self.ready_time - arrival_time
-        return 0.0
 
-    def get_time_slack(self, arrival_time: float) -> float:
-        """Calculate how much time is available before due_time."""
-        if arrival_time > self.due_time:
-            return -1  # Infeasible
-        return self.due_time - arrival_time
-
-
-@dataclass
 class Client:
     """Represents a client with location, demand, and time window."""
-    id: str
-    location: Location
-    demand: float
-    time_window: TimeWindow
-    service_time: float
+
+    __slots__ = ("id", "location", "demand", "time_window", "service_time")
+
+    def __init__(
+        self,
+        id: int,
+        location: Location,
+        demand: float,
+        time_window: TimeWindow,
+        service_time: float = 0.0,
+    ):
+        self.id = id
+        self.location = location
+        self.demand = demand
+        self.time_window = time_window
+        self.service_time = service_time
 
     def __hash__(self):
         return hash(self.id)
 
     def __eq__(self, other):
-        if not isinstance(other, Client):
-            return False
-        return self.id == other.id
+        return isinstance(other, Client) and self.id == other.id
+
+    def __repr__(self) -> str:
+        return (
+            f"Client(id={self.id}, demand={self.demand}, "
+            f"tw=({self.time_window.ready_time}, {self.time_window.due_time}))"
+        )
 
 
-@dataclass
 class Depot:
-    """Represents the central depot."""
-    id: str
-    location: Location
-    time_window: TimeWindow
+    """Represents the depot with location and vehicle capacity."""
+
+    __slots__ = ("id", "location", "capacity")
+
+    def __init__(self, id: int, location: Location, capacity: float):
+        self.id = id
+        self.location = location
+        self.capacity = capacity
 
     def __hash__(self):
         return hash(self.id)
 
+    def __repr__(self) -> str:
+        return f"Depot(id={self.id}, capacity={self.capacity})"
 
 class Route:
-    """Represents a single vehicle route."""
+    """
+    Represents a vehicle route with optional time-window feasibility checks.
+    """
 
-    def __init__(self, depot: Depot, capacity: float, ignore_time_windows: bool = False):
-        self.depot = depot
-        self.capacity = capacity
-        self.ignore_time_windows = ignore_time_windows
-        self.clients: List[Client] = []
-        self.current_load = 0.0
-        self.current_time = depot.time_window.ready_time
+    __slots__ = (
+        "_clients",
+        "_depot",
+        "_capacity",
+        "_current_load",
+        "_distance_cache",
+        "_cost_cache",
+    )
 
-    def add_client(self, client: Client) -> bool:
-        """
-        Try to add a client to the route.
-        Returns True if feasible (capacity and time window satisfied), False otherwise.
-        If ignore_time_windows=True, only checks capacity constraint.
-        """
-        # Check capacity constraint
-        if self.current_load + client.demand > self.capacity:
-            return False
+    def __init__(self, depot: Depot, capacity: float):
+        self._clients: List[Client] = []
+        self._depot = depot
+        self._capacity = capacity
+        self._current_load = 0.0
+        self._distance_cache: Optional[float] = None
+        self._cost_cache: Optional[float] = None
 
-        # If ignoring time windows, just add the client
-        if self.ignore_time_windows:
-            self.clients.append(client)
-            self.current_load += client.demand
-            return True
+    @property
+    def clients(self) -> List[Client]:
+        return self._clients
 
-        # Calculate arrival time at this client
-        if len(self.clients) == 0:
-            # First client in route
-            arrival_time = self.depot.location.distance_to(client.location)
-        else:
-            last_client = self.clients[-1]
-            arrival_time = self.current_time + last_client.service_time + \
-                          last_client.location.distance_to(client.location)
+    @property
+    def depot(self) -> Depot:
+        return self._depot
 
-        # Check time window feasibility
-        if not client.time_window.is_time_feasible(arrival_time):
-            return False
+    @property
+    def capacity(self) -> float:
+        return self._capacity
 
-        # Check if we can return to depot by closing time
-        return_time = arrival_time + client.service_time + \
-                     client.location.distance_to(self.depot.location)
-        if return_time > self.depot.time_window.due_time:
-            return False
+    @property
+    def current_load(self) -> float:
+        return self._current_load
 
-        # All constraints satisfied, add client
-        self.clients.append(client)
-        self.current_load += client.demand
-        self.current_time = max(arrival_time, client.time_window.ready_time) + client.service_time
+    @property
+    def available_capacity(self) -> float:
+        return self._capacity - self._current_load
+
+    def _invalidate_cache(self) -> None:
+        self._distance_cache = None
+        self._cost_cache = None
+
+    def _would_respect_time_windows(self, candidate_clients: List[Client]) -> bool:
+        current_time = 0.0
+        current_location = self._depot.location
+
+        for client in candidate_clients:
+            travel_time = current_location.distance_to(client.location)
+            arrival_time = current_time + travel_time
+
+            if arrival_time > client.time_window.due_time:
+                return False
+
+            service_start = max(arrival_time, client.time_window.ready_time)
+            current_time = service_start + client.service_time
+            current_location = client.location
+
         return True
 
-    def remove_client(self, client: Client) -> bool:
-        """Remove a client from the route. Returns True if removed."""
-        if client in self.clients:
-            self.clients.remove(client)
-            self._recalculate()
-            return True
-        return False
-
-    def insert_client(self, client: Client, position: int) -> bool:
-        """
-        Try to insert a client at a specific position in the route.
-        Returns True if feasible, False otherwise.
-        If ignore_time_windows=True, only checks capacity constraint.
-        """
-        # Check capacity
-        if self.current_load + client.demand > self.capacity:
+    def can_add_client(self, client: Client, use_time_windows: bool = True) -> bool:
+        if client.demand > self.available_capacity:
             return False
 
-        # If ignoring time windows, just insert the client
-        if self.ignore_time_windows:
-            self.clients.insert(position, client)
-            self.current_load += client.demand
-            self._recalculate()
+        if not use_time_windows:
             return True
 
-        # Create a temporary route to test insertion
-        temp_clients = self.clients.copy()
-        temp_clients.insert(position, client)
+        return self._would_respect_time_windows(self._clients + [client])
 
-        # Validate the entire route
-        current_time = self.depot.time_window.ready_time
-        current_load = 0.0
+    def add_client(
+        self,
+        client: Client,
+        invalidate_cache: bool = True,
+        use_time_windows: bool = True,
+    ) -> None:
+        if not self.can_add_client(client, use_time_windows=use_time_windows):
+            raise ValueError(f"Cannot add client {client.id}: violates route constraints")
 
-        for c in temp_clients:
-            # Check capacity
-            if current_load + c.demand > self.capacity:
-                return False
+        self._clients.append(client)
+        self._current_load += client.demand
 
-            # Calculate arrival time
-            if c == temp_clients[0]:
-                arrival_time = self.depot.location.distance_to(c.location)
-            else:
-                prev_client = temp_clients[temp_clients.index(c) - 1]
-                arrival_time = current_time + prev_client.service_time + \
-                              prev_client.location.distance_to(c.location)
+        if invalidate_cache:
+            self._invalidate_cache()
 
-            # Check time window
-            if not c.time_window.is_time_feasible(arrival_time):
-                return False
+    def add_clients_batch(
+        self,
+        clients: List[Client],
+        use_time_windows: bool = True,
+    ) -> None:
+        for client in clients:
+            if not self.can_add_client(client, use_time_windows=use_time_windows):
+                raise ValueError(f"Cannot add client {client.id}: violates route constraints")
+            self._clients.append(client)
+            self._current_load += client.demand
 
-            # Update state
-            current_time = max(arrival_time, c.time_window.ready_time) + c.service_time
-            current_load += c.demand
+        self._invalidate_cache()
 
-        # Check return to depot
-        if len(temp_clients) > 0:
-            last_client = temp_clients[-1]
-            return_time = current_time + last_client.location.distance_to(self.depot.location)
-            if return_time > self.depot.time_window.due_time:
-                return False
+    def remove_client(self, client: Client) -> None:
+        self._clients.remove(client)
+        self._current_load -= client.demand
+        self._invalidate_cache()
 
-        # Insertion is feasible
-        self.clients.insert(position, client)
-        self.current_load += client.demand
-        self._recalculate()
-        return True
+    def is_empty(self) -> bool:
+        return len(self._clients) == 0
 
-    def _recalculate(self):
-        """Recalculate current load and time after modifications."""
-        self.current_load = sum(c.demand for c in self.clients)
-        current_time = self.depot.time_window.ready_time
+    def __len__(self) -> int:
+        return len(self._clients)
 
-        for client in self.clients:
-            if self.clients.index(client) == 0:
-                arrival_time = self.depot.location.distance_to(client.location)
-            else:
-                prev_client = self.clients[self.clients.index(client) - 1]
-                arrival_time = current_time + prev_client.service_time + \
-                              prev_client.location.distance_to(client.location)
-
-            current_time = max(arrival_time, client.time_window.ready_time) + client.service_time
-
-        self.current_time = current_time
-
-    def get_total_distance(self) -> float:
-        """Calculate total distance traveled in this route."""
-        if len(self.clients) == 0:
-            return 0.0
-
-        distance = self.depot.location.distance_to(self.clients[0].location)
-
-        for i in range(len(self.clients) - 1):
-            distance += self.clients[i].location.distance_to(self.clients[i + 1].location)
-
-        distance += self.clients[-1].location.distance_to(self.depot.location)
-        return distance
-
-    def is_feasible(self) -> bool:
-        """Check if the entire route is feasible.
-        If ignore_time_windows=True, only checks capacity constraint."""
-        if len(self.clients) == 0:
-            return True
-
-        # If ignoring time windows, just check capacity
-        if self.ignore_time_windows:
-            total_load = sum(c.demand for c in self.clients)
-            return total_load <= self.capacity
-
-        current_time = self.depot.time_window.ready_time
-        current_load = 0.0
-
-        for i, client in enumerate(self.clients):
-            # Check capacity
-            if current_load + client.demand > self.capacity:
-                return False
-
-            # Calculate arrival time
-            if i == 0:
-                arrival_time = self.depot.location.distance_to(client.location)
-            else:
-                prev_client = self.clients[i - 1]
-                arrival_time = current_time + prev_client.service_time + \
-                              prev_client.location.distance_to(client.location)
-
-            # Check time window
-            if not client.time_window.is_time_feasible(arrival_time):
-                return False
-
-            current_time = max(arrival_time, client.time_window.ready_time) + client.service_time
-            current_load += client.demand
-
-        # Check return to depot
-        last_client = self.clients[-1]
-        return_time = current_time + last_client.location.distance_to(self.depot.location)
-        return return_time <= self.depot.time_window.due_time
-
-    def __repr__(self):
-        client_ids = [c.id for c in self.clients]
-        return f"Route({client_ids}, distance={self.get_total_distance():.2f})"
-
+    def __repr__(self) -> str:
+        return f"Route(clients={len(self._clients)}, load={self._current_load:.1f}/{self._capacity})"
 
 class Solution:
-    """Represents a complete solution with multiple routes."""
+    """
+    Represents a complete VRPTW/VRP solution.
+    """
 
-    def __init__(self, depot: Depot, capacity: float, ignore_time_windows: bool = False):
-        self.depot = depot
-        self.capacity = capacity
-        self.ignore_time_windows = ignore_time_windows
-        self.routes: List[Route] = []
+    __slots__ = ("_routes", "_depot", "_clients", "_distance_cache", "_vehicles_cache")
 
-    def add_route(self, route: Route) -> None:
-        """Add a route to the solution."""
-        self.routes.append(route)
+    def __init__(self, depot: Depot, clients: List[Client], num_vehicles: Optional[int] = None):
+        self._depot = depot
+        self._clients = clients
+        self._routes = [Route(depot, depot.capacity) for _ in range(num_vehicles or len(clients))]
+        self._distance_cache: Optional[float] = None
+        self._vehicles_cache: Optional[int] = None
 
-    def create_new_route(self) -> Route:
-        """Create and add a new empty route."""
-        route = Route(self.depot, self.capacity, ignore_time_windows=self.ignore_time_windows)
-        self.routes.append(route)
-        return route
+    @property
+    def depot(self) -> Depot:
+        return self._depot
 
-    def get_all_clients(self) -> List[Client]:
-        """Get all clients currently in routes."""
-        clients = []
-        for route in self.routes:
-            clients.extend(route.clients)
-        return clients
+    @property
+    def clients(self) -> List[Client]:
+        return self._clients
 
-    def get_unassigned_clients(self, all_clients: List[Client]) -> List[Client]:
-        """Get clients not assigned to any route."""
-        assigned = set(self.get_all_clients())
-        return [c for c in all_clients if c not in assigned]
+    @property
+    def routes(self) -> List[Route]:
+        return self._routes
 
-    def get_total_distance(self) -> float:
-        """Calculate total distance for all routes."""
-        return sum(route.get_total_distance() for route in self.routes)
+    def get_route(self, index: int) -> Route:
+        if index < 0 or index >= len(self._routes):
+            raise IndexError(f"Route index {index} out of range")
+        return self._routes[index]
 
     def get_num_vehicles(self) -> int:
-        """Get number of vehicles used."""
-        return len(self.routes)
+        if self._vehicles_cache is None:
+            self._vehicles_cache = sum(1 for route in self._routes if not route.is_empty())
+        return self._vehicles_cache
 
-    def is_complete(self, all_clients: List[Client]) -> bool:
-        """Check if all clients are assigned."""
-        return len(self.get_unassigned_clients(all_clients)) == 0
+    def invalidate_cache(self) -> None:
+        self._distance_cache = None
+        self._vehicles_cache = None
 
-    def is_feasible(self) -> bool:
-        """Check if all routes are feasible."""
-        return all(route.is_feasible() for route in self.routes)
+    def get_total_distance(self) -> float:
+        if self._distance_cache is None:
+            self._distance_cache = sum(
+                self._calculate_route_distance(route) for route in self._routes
+            )
+        return self._distance_cache
 
-    def remove_empty_routes(self) -> None:
-        """Remove routes with no clients."""
-        self.routes = [r for r in self.routes if len(r.clients) > 0]
+    @staticmethod
+    def _calculate_route_distance(route: Route) -> float:
+        if route.is_empty():
+            return 0.0
 
-    def copy(self) -> 'Solution':
-        """Create a deep copy of the solution."""
-        new_solution = Solution(self.depot, self.capacity, ignore_time_windows=self.ignore_time_windows)
-        for route in self.routes:
-            new_route = Route(self.depot, self.capacity, ignore_time_windows=self.ignore_time_windows)
-            new_route.clients = route.clients.copy()
-            new_route.current_load = route.current_load
-            new_route.current_time = route.current_time
-            new_solution.add_route(new_route)
+        total = 0.0
+        current = route.depot.location
+        for client in route.clients:
+            total += current.distance_to(client.location)
+            current = client.location
+        total += current.distance_to(route.depot.location)
+        return total
+
+    def copy(self) -> "Solution":
+        new_solution = Solution(self._depot, self._clients, len(self._routes))
+        for old_route, new_route in zip(self._routes, new_solution._routes):
+            if not old_route.is_empty():
+                new_route.add_clients_batch(old_route.clients[:], use_time_windows=False)
+        new_solution.invalidate_cache()
         return new_solution
 
-    def __repr__(self):
-        return f"Solution(vehicles={self.get_num_vehicles()}, distance={self.get_total_distance():.2f})"
+    def is_feasible(self, use_time_windows: bool = True) -> bool:
+        assigned_ids = []
+
+        for route in self._routes:
+            if route.current_load > route.capacity:
+                return False
+
+            current_time = 0.0
+            current_location = route.depot.location
+
+            for client in route.clients:
+                assigned_ids.append(client.id)
+
+                if use_time_windows:
+                    travel_time = current_location.distance_to(client.location)
+                    arrival_time = current_time + travel_time
+
+                    if arrival_time > client.time_window.due_time:
+                        return False
+
+                    service_start = max(arrival_time, client.time_window.ready_time)
+                    current_time = service_start + client.service_time
+                    current_location = client.location
+
+        return (
+            len(set(assigned_ids)) == len(self._clients)
+            and len(assigned_ids) == len(self._clients)
+        )
+
+    def __len__(self) -> int:
+        return len(self._routes)
+
+    def __repr__(self) -> str:
+        return (
+            f"Solution(vehicles={self.get_num_vehicles()}, "
+            f"distance={self.get_total_distance():.1f}, "
+            f"feasible={self.is_feasible()})"
+        )
+
+class VRPTProblem:
+    """Represents a complete VRPTW problem instance."""
+
+    __slots__ = ("name", "depot", "clients", "capacity", "num_clients")
+
+    def __init__(self, name: str, depot: Depot, clients: List[Client]):
+        self.name = name
+        self.depot = depot
+        self.clients = clients
+        self.capacity = depot.capacity
+        self.num_clients = len(clients)
+
+    def __repr__(self) -> str:
+        return f"VRPTProblem({self.name}, {self.num_clients} clients, capacity={self.capacity})"

@@ -54,13 +54,12 @@ python src/main.py
 VRPTW/
 ├── src/                              # Core optimization modules
 │   ├── __init__.py
-│   ├── main.py                       # Experiment orchestrator
-│   ├── models.py                     # Data structures (Location, Client, Route, Solution)
-│   ├── data_loader.py                # Parse .vrp problem files
 │   ├── distance_utils.py             # Distance calculations & evaluation metrics
-│   ├── solution_generator.py         # Initial solution construction heuristics
-│   ├── neighborhood.py               # Local search operators (2-opt, Or-opt, etc.)
 │   ├── genetic_algorithm.py          # GA metaheuristic implementation
+│   ├── solution_generator.py         # Initial solution construction heuristics
+│   ├── models.py                     # Data structures (Location, Client, Route, Solution)
+│   ├── neighborhood.py               # Local search operators (2-opt, Or-opt, etc.)
+│   ├── solution_generator.py         # generate a basic solution to start optimizing
 │   └── tabu_search.py                # TS metaheuristic implementation
 │
 ├── visualization/                    # Visualization package (separated from core)

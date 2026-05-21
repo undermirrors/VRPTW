@@ -1,325 +1,287 @@
+"""
+Tabu Search implementation for VRPTW / VRP.
+"""
+
 import random
-import time
-from typing import List, Tuple, Optional, Set
-from models import Client, Depot, Solution
-from distance_utils import DistanceCalculator, SolutionEvaluator
-from solution_generator import SolutionGenerator
-from neighborhood import NeighborhoodManager
-from feasibility_operators import LargeNeighborhoodSearch, FeasibilityRestorer
+from typing import List, Optional, Tuple
 
+from .models import Solution, Depot, Client
+from .distance_utils import DistanceCalculator
+from .solution_generator import SolutionGenerator
 
-class TabuAttribute:
-    """Represents an attribute (move) in the tabu list."""
-
-    def __init__(self, move_description: str, tabu_tenure: int):
-        """
-        Args:
-            move_description: Description of the move (e.g., "relocate_c1_to_route_2")
-            tabu_tenure: Number of iterations this move remains tabu
-        """
-        self.move_description = move_description
-        self.tabu_tenure = tabu_tenure
-        self.iteration_added = 0
+TS_DEFAULT_MAX_ITERATIONS = 1000
+TS_DEFAULT_TABU_TENURE = None
+TS_DEFAULT_NEIGHBORHOOD_SIZE = 100
+TS_DEFAULT_ASPIRATION_CRITERIA = True
 
 
 class TabuSearch:
-    """
-    Tabu Search metaheuristic for VRPTW.
+    """Tabu Search metaheuristic for VRPTW/VRP."""
 
-    Uses:
-    - Tabu list to avoid cycling and revisiting recent solutions
-    - Aspiration criteria to override tabu status for improving solutions
-    - Best improvement neighborhood exploration strategy
-    - Adaptive tabu tenure based on problem size
-    - Diversification and intensification strategies
-    - Multiple neighborhood operators for rich search space exploration
-    """
+    def __init__(
+            self,
+            depot: Depot,
+            clients: List[Client],
+            capacity: float,
+            max_iterations: int = TS_DEFAULT_MAX_ITERATIONS,
+            tabu_tenure: Optional[int] = TS_DEFAULT_TABU_TENURE,
+            neighborhood_size: int = TS_DEFAULT_NEIGHBORHOOD_SIZE,
+            aspiration_criteria: bool = TS_DEFAULT_ASPIRATION_CRITERIA,
+            use_time_windows: bool = True,
+    ):
+        if max_iterations < 1:
+            raise ValueError("max_iterations must be at least 1")
+        if neighborhood_size < 1:
+            raise ValueError("neighborhood_size must be at least 1")
 
-    def __init__(self, depot: Depot, clients: List[Client], capacity: float,
-                 max_iterations: int = 1000, tabu_tenure: int = None,
-                 neighborhood_size: int = 100, diversification_freq: int = 50,
-                 ignore_time_windows: bool = False, minimize_vehicles: bool = False,
-                 vehicle_weight: float = 100.0):
-        """
-        Initialize Tabu Search.
-
-        Args:
-            depot: The depot
-            clients: All clients to serve
-            capacity: Vehicle capacity
-            max_iterations: Maximum number of iterations
-            tabu_tenure: Number of iterations a move stays tabu (auto-calculated if None)
-            neighborhood_size: Size of neighborhood to explore per iteration
-            diversification_freq: Frequency of diversification moves (in iterations)
-            ignore_time_windows: If True, ignore time window constraints (VRP instead of VRPTW)
-            minimize_vehicles: If True, penalize number of vehicles in objective
-            vehicle_weight: Weight for vehicle count penalty (if minimize_vehicles=True)
-        """
         self.depot = depot
         self.clients = clients
         self.capacity = capacity
-        self.ignore_time_windows = ignore_time_windows
-        self.minimize_vehicles = minimize_vehicles
-        self.vehicle_weight = vehicle_weight
-
         self.max_iterations = max_iterations
-        # Auto-calculate tabu tenure based on problem size
-        self.tabu_tenure = tabu_tenure or max(7, len(clients) // 10)
         self.neighborhood_size = neighborhood_size
-        self.diversification_freq = diversification_freq
-
-        self.current_solution: Solution = None
-        self.best_solution: Solution = None
-        self.best_fitness: float = float('inf')
-        self.current_fitness: float = float('inf')
-
-        self.tabu_list: List[TabuAttribute] = []
-        self.iteration = 0
-        self.neighborhood_manager = NeighborhoodManager()
-        self.lns_operator = LargeNeighborhoodSearch(destruction_rate=0.3)
-        self.feasibility_restorer = FeasibilityRestorer()
-
-        self.iteration_history = []
-        self.best_history = []
-
-    def initialize(self) -> None:
-        """Initialize with a good initial solution using multi-start nearest neighbor."""
-        # Use multi-start nearest neighbor to get good initial solution
-        self.current_solution = SolutionGenerator.multi_start_nearest_neighbor(
-            self.depot, self.clients, self.capacity, num_restarts=5,
-            ignore_time_windows=self.ignore_time_windows
+        self.aspiration_criteria = aspiration_criteria
+        self.use_time_windows = use_time_windows
+        self.tabu_tenure = (
+            tabu_tenure if tabu_tenure is not None else max(10, len(clients) // 2)
         )
 
-        self.best_solution = self.current_solution.copy()
-        self.best_fitness = SolutionEvaluator.evaluate_quality(
-            self.best_solution, self.clients,
-            minimize_vehicles=self.minimize_vehicles,
-            vehicle_weight=self.vehicle_weight
-        )
-        self.current_fitness = self.best_fitness
+        self.tabu_list: List[Tuple[str, int]] = []
+        self.iteration_count = 0
+        self.best_solution: Optional[Solution] = None
 
-    def _update_tabu_list(self) -> None:
-        """Remove expired tabu attributes (those whose tenure has expired)."""
-        self.tabu_list = [attr for attr in self.tabu_list
-                         if self.iteration - attr.iteration_added < attr.tabu_tenure]
+    def search(self, initial_solution: Optional[Solution] = None, verbose: bool = False) -> Solution:
+        if initial_solution is None:
+            try:
+                current_solution = SolutionGenerator.nearest_neighbor(
+                    self.depot,
+                    self.clients,
+                    self.capacity,
+                    use_time_windows=self.use_time_windows,
+                )
+            except RuntimeError:
+                current_solution = SolutionGenerator.random_solution(
+                    self.depot,
+                    self.clients,
+                    self.capacity,
+                    use_time_windows=self.use_time_windows,
+                )
+        else:
+            current_solution = initial_solution.copy()
 
-    def _is_tabu(self, move_description: str) -> bool:
-        """Check if a move is currently in the tabu list."""
-        for attr in self.tabu_list:
-            if attr.move_description == move_description:
+        best_solution = current_solution.copy()
+        best_key = self._solution_key(best_solution)
+
+        if verbose:
+            mode = "VRPTW" if self.use_time_windows else "VRP"
+            print(f"TS ({mode}): Starting search from distance {best_key[1]:.2f}")
+            print(f"TS: Tabu tenure = {self.tabu_tenure}, neighborhood = {self.neighborhood_size}")
+
+        no_improve_count = 0
+
+        for self.iteration_count in range(self.max_iterations):
+            neighbors = self._get_neighbors(current_solution)
+
+            if not neighbors:
+                no_improve_count += 1
+                continue
+
+            feasible_neighbors = [n for n in neighbors if self._is_feasible(n)]
+
+            candidate_pool = feasible_neighbors if feasible_neighbors else []
+
+            best_neighbor = None
+            best_neighbor_key = (float("inf"), float("inf"), float("inf"))
+
+            for neighbor in candidate_pool:
+                neighbor_key = self._solution_key(neighbor)
+                move_hash = self._hash_solution(neighbor)
+                is_tabu = self._is_tabu(move_hash)
+
+                if (not is_tabu) or (
+                        self.aspiration_criteria and neighbor_key < best_key
+                ):
+                    if neighbor_key < best_neighbor_key:
+                        best_neighbor = neighbor
+                        best_neighbor_key = neighbor_key
+
+            if best_neighbor is None:
+                if candidate_pool:
+                    best_neighbor = min(candidate_pool, key=self._solution_key)
+                    best_neighbor_key = self._solution_key(best_neighbor)
+                else:
+                    no_improve_count += 1
+                    continue
+
+            current_solution = best_neighbor
+            self.tabu_list.append(
+                (self._hash_solution(current_solution), self.iteration_count + self.tabu_tenure)
+            )
+            self._clean_tabu_list()
+
+            if best_neighbor_key < best_key:
+                best_key = best_neighbor_key
+                best_solution = best_neighbor.copy()
+                no_improve_count = 0
+
+                if verbose and (self.iteration_count + 1) % max(1, self.max_iterations // 10) == 0:
+                    print(
+                        f" Iter {self.iteration_count + 1}: "
+                        f"New best vehicles = {best_key[0]}, distance = {best_key[1]:.2f}"
+                    )
+            else:
+                no_improve_count += 1
+
+            if no_improve_count > self.max_iterations // 5:
+                if verbose:
+                    print(
+                        f" Iter {self.iteration_count + 1}: "
+                        f"No improvement for {no_improve_count} iterations, stopping"
+                    )
+                break
+
+        self.best_solution = best_solution.copy()
+
+        if verbose:
+            print(
+                f"TS: Search complete. Best vehicles: {best_key[0]}, "
+                f"Best distance: {best_key[1]:.2f}"
+            )
+
+        return best_solution
+
+    def _get_neighbors(self, solution: Solution) -> List[Solution]:
+        neighbors: List[Solution] = []
+
+        non_empty_route_indices = [
+            i for i, route in enumerate(solution.routes) if not route.is_empty()
+        ]
+        if not non_empty_route_indices:
+            return neighbors
+
+        attempts = 0
+        max_attempts = max(self.neighborhood_size * 3, 20)
+
+        while len(neighbors) < self.neighborhood_size and attempts < max_attempts:
+            attempts += 1
+            neighbor = solution.copy()
+
+            mutation_type = random.choice(
+                ["swap_in_route", "move_between_routes", "swap_between_routes"]
+            )
+
+            try:
+                if mutation_type == "swap_in_route":
+                    candidate_indices = [
+                        i for i in non_empty_route_indices
+                        if len(neighbor.routes[i].clients) >= 2
+                    ]
+                    if not candidate_indices:
+                        continue
+
+                    r_idx = random.choice(candidate_indices)
+                    route = neighbor.routes[r_idx]
+                    i, j = random.sample(range(len(route.clients)), 2)
+                    route.clients[i], route.clients[j] = route.clients[j], route.clients[i]
+
+                elif mutation_type == "move_between_routes":
+                    src_candidates = [r for r in neighbor.routes if not r.is_empty()]
+                    if not src_candidates:
+                        continue
+
+                    src_route = random.choice(src_candidates)
+                    client = random.choice(src_route.clients)
+
+                    dst_candidates = [
+                        r
+                        for r in neighbor.routes
+                        if r is not src_route
+                           and r.can_add_client(
+                            client,
+                            use_time_windows=self.use_time_windows,
+                        )
+                    ]
+                    if not dst_candidates:
+                        continue
+
+                    dst_route = random.choice(dst_candidates)
+                    src_route.remove_client(client)
+                    dst_route.add_client(
+                        client,
+                        use_time_windows=self.use_time_windows,
+                    )
+
+                elif mutation_type == "swap_between_routes":
+                    route_candidates = [r for r in neighbor.routes if not r.is_empty()]
+                    if len(route_candidates) < 2:
+                        continue
+
+                    r1, r2 = random.sample(route_candidates, 2)
+                    c1 = random.choice(r1.clients)
+                    c2 = random.choice(r2.clients)
+
+                    new_load_r1 = r1.current_load - c1.demand + c2.demand
+                    new_load_r2 = r2.current_load - c2.demand + c1.demand
+
+                    if new_load_r1 <= r1.capacity and new_load_r2 <= r2.capacity:
+                        i1 = r1.clients.index(c1)
+                        i2 = r2.clients.index(c2)
+
+                        old1 = r1.clients[i1]
+                        old2 = r2.clients[i2]
+
+                        r1.clients[i1], r2.clients[i2] = old2, old1
+                        r1._current_load = new_load_r1
+                        r2._current_load = new_load_r2
+
+                        if self.use_time_windows:
+                            if (not neighbor.is_feasible(use_time_windows=True)):
+                                r1.clients[i1], r2.clients[i2] = old1, old2
+                                r1._current_load = r1.current_load - c2.demand + c1.demand
+                                r2._current_load = r2.current_load - c1.demand + c2.demand
+                                continue
+                    else:
+                        continue
+
+                neighbor.invalidate_cache()
+
+                if (
+                        self._hash_solution(neighbor) != self._hash_solution(solution)
+                        and self._is_feasible(neighbor)
+                ):
+                    neighbors.append(neighbor)
+
+            except (ValueError, IndexError):
+                continue
+
+        return neighbors
+
+    @staticmethod
+    def _hash_solution(solution: Solution) -> str:
+        route_hashes = []
+        for route in solution.routes:
+            if not route.is_empty():
+                client_ids = tuple(client.id for client in route.clients)
+                route_hashes.append(str(client_ids))
+        return "|".join(sorted(route_hashes))
+
+    def _is_tabu(self, move_hash: str) -> bool:
+        for tabu_hash, expiration in self.tabu_list:
+            if tabu_hash == move_hash and expiration > self.iteration_count:
                 return True
         return False
 
-    def _add_to_tabu(self, move_description: str) -> None:
-        """Add a move to the tabu list with specified tenure."""
-        # Check if already in list and update its iteration
-        for attr in self.tabu_list:
-            if attr.move_description == move_description:
-                attr.iteration_added = self.iteration
-                return
+    def _clean_tabu_list(self) -> None:
+        self.tabu_list = [
+            (move_hash, expiration)
+            for move_hash, expiration in self.tabu_list
+            if expiration > self.iteration_count
+        ]
 
-        # Add new tabu attribute
-        tabu_attr = TabuAttribute(move_description, self.tabu_tenure)
-        tabu_attr.iteration_added = self.iteration
-        self.tabu_list.append(tabu_attr)
+    def _is_feasible(self, solution: Solution) -> bool:
+        return solution.is_feasible(use_time_windows=self.use_time_windows)
 
-    def _aspiration_criteria(self, candidate_fitness: float) -> bool:
-        """
-        Check if aspiration criteria is met.
-        Override tabu status if solution is better than best found so far.
-        This prevents tabu restrictions from preventing finding new best solutions.
-        """
-        return candidate_fitness < self.best_fitness
-
-    def _explore_neighborhood(self, solution: Solution) -> Tuple[Optional[Solution], Optional[str], float]:
-        """
-        Explore neighborhood using best improvement strategy.
-        Returns the best neighbor found that is not tabu (or meets aspiration criteria).
-        """
-        best_neighbor = None
-        best_move_desc = None
-        best_candidate_fitness = float('inf')
-
-        # Apply multiple random moves to explore different neighbors
-        for _ in range(min(self.neighborhood_size, 50)):
-            # Generate random move
-            neighbor, move_desc = self.neighborhood_manager.apply_random_operator(solution)
-
-            if neighbor is None:
-                continue
-
-            # Evaluate neighbor
-            neighbor_fitness = SolutionEvaluator.evaluate_quality(
-                neighbor, self.clients,
-                minimize_vehicles=self.minimize_vehicles,
-                vehicle_weight=self.vehicle_weight
-            )
-
-            # Check tabu status
-            is_tabu = self._is_tabu(move_desc)
-
-            # Accept if: not tabu, or tabu but meets aspiration criteria, and improves best found
-            if not is_tabu or self._aspiration_criteria(neighbor_fitness):
-                if neighbor_fitness < best_candidate_fitness:
-                    best_candidate_fitness = neighbor_fitness
-                    best_neighbor = neighbor
-                    best_move_desc = move_desc
-
-        delta = best_candidate_fitness - self.current_fitness if best_neighbor else 0.0
-        return best_neighbor, best_move_desc, delta
-
-    def _diversification(self, solution: Solution) -> Solution:
-        """
-        Apply diversification strategy to escape local optima.
-        Applies multiple random moves to create a significantly different solution.
-        """
-        new_solution = solution.copy()
-        num_moves = random.randint(5, 10)
-
-        for _ in range(num_moves):
-            new_solution, _ = self.neighborhood_manager.apply_random_operator(new_solution)
-
-        return new_solution
-
-    def _intensification(self, solution: Solution) -> Solution:
-        """
-        Apply intensification strategy to improve current good solutions.
-        Uses best-improvement moves multiple times.
-        """
-        current = solution.copy()
-
-        for _ in range(3):
-            # Temporarily disable diversification
-            old_freq = self.diversification_freq
-            self.diversification_freq = float('inf')
-
-            neighbor, move_desc, delta = self._explore_neighborhood(current)
-
-            self.diversification_freq = old_freq
-
-            if neighbor and delta < 0:
-                current = neighbor
-            else:
-                break
-
-        return current
-
-    def search(self, verbose: bool = False) -> Solution:
-        """
-        Run tabu search algorithm for specified number of iterations.
-
-        Args:
-            verbose: Print progress information every 50 iterations
-
-        Returns:
-            Best solution found during search
-        """
-        self.initialize()
-
-        if verbose:
-            distance = DistanceCalculator.solution_distance(self.best_solution)
-            vehicles = self.best_solution.get_num_vehicles()
-            mode = "VRP" if self.ignore_time_windows else "VRPTW"
-            obj = f"distance + vehicles" if self.minimize_vehicles else "distance"
-            print(f"Tabu Search initialized:")
-            print(f"  Mode: {mode}")
-            print(f"  Objective: minimize {obj}")
-            print(f"  Initial distance: {distance:.2f}")
-            print(f"  Initial vehicles: {vehicles}")
-            print(f"  Tabu tenure: {self.tabu_tenure}")
-            print(f"  Max iterations: {self.max_iterations}")
-
-        no_improvement_counter = 0
-
-        for self.iteration in range(self.max_iterations):
-            # Update tabu list (remove expired entries)
-            self._update_tabu_list()
-
-            # Decide on exploration strategy
-            if no_improvement_counter > 0 and self.iteration % self.diversification_freq == 0:
-                # Apply diversification when stuck
-                self.current_solution = self._diversification(self.current_solution)
-                self.current_fitness = SolutionEvaluator.evaluate_quality(
-                    self.current_solution, self.clients
-                )
-                no_improvement_counter = 0
-
-                if verbose and (self.iteration + 1) % 50 == 0:
-                    print(f"  [Iteration {self.iteration + 1}] Diversification applied")
-
-            elif no_improvement_counter > 0 and no_improvement_counter % 2 == 0:
-                # Apply intensification to improve good solutions
-                self.current_solution = self._intensification(self.current_solution)
-                self.current_fitness = SolutionEvaluator.evaluate_quality(
-                    self.current_solution, self.clients
-                )
-
-                if verbose and (self.iteration + 1) % 50 == 0:
-                    print(f"  [Iteration {self.iteration + 1}] Intensification applied")
-
-            else:
-                # Explore neighborhood normally
-                neighbor, move_desc, delta = self._explore_neighborhood(self.current_solution)
-
-                if neighbor is not None:
-                    self.current_solution = neighbor
-                    self.current_fitness = SolutionEvaluator.evaluate_quality(
-                        self.current_solution, self.clients,
-                        minimize_vehicles=self.minimize_vehicles,
-                        vehicle_weight=self.vehicle_weight
-                    )
-
-                    # Add move to tabu list
-                    if move_desc:
-                        self._add_to_tabu(move_desc)
-
-                    # Update best if improved
-                    if self.current_fitness < self.best_fitness:
-                        self.best_fitness = self.current_fitness
-                        self.best_solution = self.current_solution.copy()
-                        no_improvement_counter = 0
-                    else:
-                        no_improvement_counter += 1
-                else:
-                    no_improvement_counter += 1
-
-            # Record iteration history
-            self.iteration_history.append(self.current_fitness)
-            self.best_history.append(self.best_fitness)
-
-            if verbose and (self.iteration + 1) % 50 == 0:
-                distance = DistanceCalculator.solution_distance(self.best_solution)
-                vehicles = self.best_solution.get_num_vehicles()
-                print(f"Iteration {self.iteration + 1}/{self.max_iterations}:")
-                print(f"  Best Distance: {distance:.2f}")
-                print(f"  Best Vehicles: {vehicles}")
-                print(f"  Current Fitness: {self.current_fitness:.2f}")
-                print(f"  Tabu List Size: {len(self.tabu_list)}")
-                print(f"  No Improvement: {no_improvement_counter} iterations")
-
-        if verbose:
-            distance = DistanceCalculator.solution_distance(self.best_solution)
-            vehicles = self.best_solution.get_num_vehicles()
-            print(f"\nTabu Search completed:")
-            print(f"  Final best distance: {distance:.2f}")
-            print(f"  Final vehicles: {vehicles}")
-
-        return self.best_solution
-
-    def get_statistics(self) -> dict:
-        """Get comprehensive statistics about the search run."""
-        stats = {
-            'best_fitness': self.best_fitness,
-            'best_solution': self.best_solution,
-            'iteration_history': self.iteration_history,
-            'best_history': self.best_history,
-            'final_tabu_list_size': len(self.tabu_list),
-            'iterations_run': self.iteration + 1,
-            'tabu_tenure_used': self.tabu_tenure,
-        }
-
-        if self.best_solution:
-            stats['best_distance'] = DistanceCalculator.solution_distance(self.best_solution)
-            stats['best_vehicles'] = self.best_solution.get_num_vehicles()
-
-        return stats
+    def _solution_key(self, solution: Solution):
+        feasible = self._is_feasible(solution)
+        vehicles = solution.get_num_vehicles()
+        distance = DistanceCalculator.solution_distance(solution)
+        return (0 if feasible else 1, vehicles, distance)
