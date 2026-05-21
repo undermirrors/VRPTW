@@ -161,3 +161,52 @@ TS_DEFAULT_MAX_ITERATIONS = 2000
 TS_DEFAULT_TABU_TENURE = 10
 TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 TS_DEFAULT_ASPIRATION_CRITERIA = True
+
+## TEST_4
+
+TS: Search complete. Feasible : True, Best vehicles: 12, Best distance: 1256.18
+GA -> dist=1661.91, K=11, feasible=True, time=96.59s
+TS -> dist=1256.18, K=12, feasible=True, time=108.69s
+Winner: GA
+
+====================================================================================================
+TABLEAU 2 : RESULTATS MODE VRP (sans fenetres de temps)
+====================================================================================================
+Problem           GA Dist   GA K      TS Dist   TS K       Winner
+data101           1070.07      8       950.10      8           TS
+data102           1074.11      8       910.88      8           TS
+data1101          1185.18      9      1247.79      9           GA
+data1102          1174.83      9      1202.55      9           GA
+data111           1031.84      8       974.05      8           TS
+data112           1049.58      8       935.98      8           TS
+data1201           753.89      2       781.99      2           GA
+data1202           744.26      2       768.24      2           GA
+data201            768.07      2       798.72      2           GA
+data202            783.04      2       795.35      2           GA
+
+====================================================================================================
+TABLEAU 3 : RESULTATS MODE VRPTW (avec fenetres de temps)
+====================================================================================================
+Problem           GA Dist   GA K    GA Feas      TS Dist   TS K    TS Feas               Winner
+data101           2197.03     28       True      1813.39     23       True                   TS
+data102           2032.28     23       True      1619.30     21       True                   TS
+data1101          2158.56     22       True      1996.94     21       True                   TS
+data1102          2275.61     21       True      1808.94     21       True                   TS
+data111           1533.89     18       True      1391.62     18       True                   TS
+data112           1153.80     12       True      1154.97     13       True                   GA
+data1201          2319.18     12       True      1888.66     12       True                   TS
+data1202          1982.43     10       True      1505.24     11       True                   GA
+data201           2020.47     12       True      1447.47     14       True                   GA
+data202           1661.91     11       True      1256.18     12       True                   GA
+
+
+GA_DEFAULT_POPULATION_SIZE = 400
+GA_DEFAULT_GENERATIONS = 300
+GA_DEFAULT_CROSSOVER_RATE = 0.90
+GA_DEFAULT_MUTATION_RATE = 0.08
+GA_DEFAULT_ELITE_SIZE = 1
+GA_DEFAULT_TOURNAMENT_SIZE = 2
+TS_DEFAULT_MAX_ITERATIONS = 2000
+TS_DEFAULT_TABU_TENURE = 10
+TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
+TS_DEFAULT_ASPIRATION_CRITERIA = True
