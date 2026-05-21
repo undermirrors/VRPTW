@@ -8,11 +8,7 @@ from typing import List, Optional, Tuple
 from .models import Solution, Depot, Client
 from .distance_utils import DistanceCalculator
 from .solution_generator import SolutionGenerator
-
-TS_DEFAULT_MAX_ITERATIONS = 1000
-TS_DEFAULT_TABU_TENURE = None
-TS_DEFAULT_NEIGHBORHOOD_SIZE = 100
-TS_DEFAULT_ASPIRATION_CRITERIA = True
+from . import hyperparameters as hp
 
 
 class TabuSearch:
@@ -23,10 +19,10 @@ class TabuSearch:
             depot: Depot,
             clients: List[Client],
             capacity: float,
-            max_iterations: int = TS_DEFAULT_MAX_ITERATIONS,
-            tabu_tenure: Optional[int] = TS_DEFAULT_TABU_TENURE,
-            neighborhood_size: int = TS_DEFAULT_NEIGHBORHOOD_SIZE,
-            aspiration_criteria: bool = TS_DEFAULT_ASPIRATION_CRITERIA,
+            max_iterations: int = hp.TS_DEFAULT_MAX_ITERATIONS,
+            tabu_tenure: Optional[int] = hp.TS_DEFAULT_TABU_TENURE,
+            neighborhood_size: int = hp.TS_DEFAULT_NEIGHBORHOOD_SIZE,
+            aspiration_criteria: bool = hp.TS_DEFAULT_ASPIRATION_CRITERIA,
             use_time_windows: bool = True,
     ):
         if max_iterations < 1:
@@ -143,8 +139,9 @@ class TabuSearch:
 
         if verbose:
             print(
-                f"TS: Search complete. Best vehicles: {best_key[0]}, "
-                f"Best distance: {best_key[1]:.2f}"
+                f"TS: Search complete. Feasible : {best_key[0] == 0}, "
+                f"Best vehicles: {best_key[1]}, "
+                f"Best distance: {best_key[2]:.2f}"
             )
 
         return best_solution

@@ -8,13 +8,7 @@ from typing import List, Optional
 from .models import Solution, Depot, Client
 from .distance_utils import DistanceCalculator
 from .solution_generator import SolutionGenerator
-
-GA_DEFAULT_POPULATION_SIZE = 50
-GA_DEFAULT_GENERATIONS = 100
-GA_DEFAULT_CROSSOVER_RATE = 0.8
-GA_DEFAULT_MUTATION_RATE = 0.2
-GA_DEFAULT_ELITE_SIZE = 2
-GA_DEFAULT_TOURNAMENT_SIZE = 3
+from . import hyperparameters as hp
 
 
 class GeneticAlgorithm:
@@ -25,12 +19,12 @@ class GeneticAlgorithm:
             depot: Depot,
             clients: List[Client],
             capacity: float,
-            population_size: int = GA_DEFAULT_POPULATION_SIZE,
-            generations: int = GA_DEFAULT_GENERATIONS,
-            crossover_rate: float = GA_DEFAULT_CROSSOVER_RATE,
-            mutation_rate: float = GA_DEFAULT_MUTATION_RATE,
-            elite_size: int = GA_DEFAULT_ELITE_SIZE,
-            tournament_size: int = GA_DEFAULT_TOURNAMENT_SIZE,
+            population_size: int = hp.GA_DEFAULT_POPULATION_SIZE,
+            generations: int = hp.GA_DEFAULT_GENERATIONS,
+            crossover_rate: float = hp.GA_DEFAULT_CROSSOVER_RATE,
+            mutation_rate: float = hp.GA_DEFAULT_MUTATION_RATE,
+            elite_size: int = hp.GA_DEFAULT_ELITE_SIZE,
+            tournament_size: int = hp.GA_DEFAULT_TOURNAMENT_SIZE,
             use_time_windows: bool = True,
     ):
         if population_size < 4:

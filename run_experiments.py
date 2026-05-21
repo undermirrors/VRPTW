@@ -19,6 +19,80 @@ def ensure_plot_dir(project_dir: Path) -> Path:
     return plot_dir
 
 
+def ensure_dataset_dir(project_dir: Path, dataset_name: str) -> Path:
+    dataset_dir = project_dir / "results" / "solutions" / dataset_name
+    dataset_dir.mkdir(parents=True, exist_ok=True)
+    return dataset_dir
+
+
+def plot_solution_routes(problem, solution, title: str, output_path: Path, use_time_windows: bool = False) -> None:
+    fig, ax = plt.subplots(figsize=(10, 8), constrained_layout=True)
+
+    depot_x = problem.depot.location.x
+    depot_y = problem.depot.location.y
+
+    ax.scatter(
+        [depot_x],
+        [depot_y],
+        c="red",
+        s=180,
+        marker="s",
+        label="Dépôt",
+        edgecolors="black",
+        linewidths=1.0,
+        zorder=5,
+    )
+
+    all_client_x = [client.location.x for client in problem.clients]
+    all_client_y = [client.location.y for client in problem.clients]
+    ax.scatter(
+        all_client_x,
+        all_client_y,
+        c="lightgray",
+        s=30,
+        alpha=0.7,
+        label="Clients",
+        zorder=1,
+    )
+
+    non_empty_routes = [route for route in solution.routes if not route.is_empty()]
+    cmap = plt.cm.get_cmap("tab20", max(len(non_empty_routes), 1))
+
+    for idx, route in enumerate(non_empty_routes):
+        color = cmap(idx)
+        xs = [depot_x] + [client.location.x for client in route.clients] + [depot_x]
+        ys = [depot_y] + [client.location.y for client in route.clients] + [depot_y]
+
+        ax.plot(xs, ys, color=color, linewidth=2.0, alpha=0.95, label=f"Route {idx + 1}", zorder=2)
+        ax.scatter(xs[1:-1], ys[1:-1], color=[color], s=40, zorder=3)
+
+        for client in route.clients:
+            ax.annotate(
+                str(client.id),
+                (client.location.x, client.location.y),
+                textcoords="offset points",
+                xytext=(4, 4),
+                fontsize=7,
+                alpha=0.8,
+            )
+
+    distance = DistanceCalculator.solution_distance(solution)
+    vehicles = solution.get_num_vehicles()
+    mode = "VRPTW" if use_time_windows else "VRP"
+
+    ax.set_title(
+        f"{title}\n{problem.name} | {mode} | Distance={distance:.2f} | Véhicules={vehicles}"
+    )
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.grid(True, linestyle="--", alpha=0.25)
+    ax.legend(loc="best", fontsize=8)
+    ax.set_aspect("equal", adjustable="box")
+
+    fig.savefig(output_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
 def plot_first_comparison(results_by_problem: dict, mode_name: str, output_path: Path) -> None:
     datasets = list(results_by_problem.keys())
     ga_dist = [results_by_problem[d]["genetic_algorithm"]["distance"] for d in datasets]
@@ -180,6 +254,7 @@ def solve_problem(problem, use_time_windows: bool, verbose: bool = True) -> dict
             "is_feasible": ga_stats["feasible"],
             "solution_stats": ga_stats,
             "generation_history": list(getattr(ga, "generation_history", [])),
+            "solution": ga_solution,
         },
         "tabu_search": {
             "execution_time": ts_time,
@@ -187,6 +262,7 @@ def solve_problem(problem, use_time_windows: bool, verbose: bool = True) -> dict
             "num_vehicles": ts_solution.get_num_vehicles(),
             "is_feasible": ts_stats["feasible"],
             "solution_stats": ts_stats,
+            "solution": ts_solution,
         },
         "winner": winner,
     }
@@ -207,6 +283,22 @@ def solve_problem(problem, use_time_windows: bool, verbose: bool = True) -> dict
         print(f"Winner: {winner}")
 
     return result
+
+
+def strip_solution_objects(results: dict) -> dict:
+    serializable = {"vrp_results": {}, "vrptw_results": {}, "generated_plots": {}}
+
+    for mode_key in ["vrp_results", "vrptw_results"]:
+        for problem_name, result in results[mode_key].items():
+            cleaned = dict(result)
+            cleaned["genetic_algorithm"] = dict(result["genetic_algorithm"])
+            cleaned["tabu_search"] = dict(result["tabu_search"])
+            cleaned["genetic_algorithm"].pop("solution", None)
+            cleaned["tabu_search"].pop("solution", None)
+            serializable[mode_key][problem_name] = cleaned
+
+    serializable["generated_plots"] = results.get("generated_plots", {})
+    return serializable
 
 
 def print_summary_table(title: str, results: dict, use_time_windows: bool) -> None:
@@ -263,8 +355,48 @@ def main(problem_limit: int | None = None, verbose: bool = True) -> int:
     }
 
     for problem in problems:
+        dataset_dir = ensure_dataset_dir(project_dir, problem.name)
+
         vrp_result = solve_problem(problem, use_time_windows=False, verbose=verbose)
         vrptw_result = solve_problem(problem, use_time_windows=True, verbose=verbose)
+
+        plot_solution_routes(
+            problem,
+            vrp_result["genetic_algorithm"]["solution"],
+            title="Solution GA",
+            output_path=dataset_dir / "ga_vrp_solution.png",
+            use_time_windows=False,
+        )
+        plot_solution_routes(
+            problem,
+            vrp_result["tabu_search"]["solution"],
+            title="Solution TS",
+            output_path=dataset_dir / "ts_vrp_solution.png",
+            use_time_windows=False,
+        )
+        plot_solution_routes(
+            problem,
+            vrptw_result["genetic_algorithm"]["solution"],
+            title="Solution GA",
+            output_path=dataset_dir / "ga_vrptw_solution.png",
+            use_time_windows=True,
+        )
+        plot_solution_routes(
+            problem,
+            vrptw_result["tabu_search"]["solution"],
+            title="Solution TS",
+            output_path=dataset_dir / "ts_vrptw_solution.png",
+            use_time_windows=True,
+        )
+
+        vrp_result["generated_images"] = {
+            "ga_solution": str(dataset_dir / "ga_vrp_solution.png"),
+            "ts_solution": str(dataset_dir / "ts_vrp_solution.png"),
+        }
+        vrptw_result["generated_images"] = {
+            "ga_solution": str(dataset_dir / "ga_vrptw_solution.png"),
+            "ts_solution": str(dataset_dir / "ts_vrptw_solution.png"),
+        }
 
         comprehensive_results["vrp_results"][problem.name] = vrp_result
         comprehensive_results["vrptw_results"][problem.name] = vrptw_result
@@ -285,7 +417,6 @@ def main(problem_limit: int | None = None, verbose: bool = True) -> int:
     plot_first_comparison(
         comprehensive_results["vrp_results"],
         mode_name="VRP",
-
         output_path=plot_dir / "vrp_comparison.png",
     )
     plot_first_comparison(
@@ -300,10 +431,8 @@ def main(problem_limit: int | None = None, verbose: bool = True) -> int:
     )
 
     first_problem_name = problems[0].name
-    first_vrp_history = comprehensive_results["vrp_results"][first_problem_name]["genetic_algorithm"].get(
-        "generation_history", [])
-    first_vrptw_history = comprehensive_results["vrptw_results"][first_problem_name]["genetic_algorithm"].get(
-        "generation_history", [])
+    first_vrp_history = comprehensive_results["vrp_results"][first_problem_name]["genetic_algorithm"].get("generation_history", [])
+    first_vrptw_history = comprehensive_results["vrptw_results"][first_problem_name]["genetic_algorithm"].get("generation_history", [])
 
     plot_ga_learning_curve(
         first_vrp_history,
@@ -327,11 +456,13 @@ def main(problem_limit: int | None = None, verbose: bool = True) -> int:
     }
 
     output_path = results_dir / "comprehensive_results.json"
+    serializable_results = strip_solution_objects(comprehensive_results)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(comprehensive_results, f, indent=2, ensure_ascii=False)
+        json.dump(serializable_results, f, indent=2, ensure_ascii=False)
 
     print(f"\nRésultats sauvegardés dans : {output_path}")
     print(f"Graphes sauvegardés dans : {plot_dir}")
+    print(f"Images des solutions sauvegardées dans : {results_dir / 'solutions'}")
     return 0
 
 
