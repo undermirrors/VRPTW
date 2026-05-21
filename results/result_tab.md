@@ -91,3 +91,16 @@ TS_DEFAULT_ASPIRATION_CRITERIA = True
 
 Le passage à population = 400 et tournament = 2 aide souvent à casser la convergence prématurée, tandis que mutation = 0.08 réinjecte un peu plus de nouveauté sans rendre l’évolution chaotique.
 Côté TS, neighborhood = 500 te donne plus d’options locales sans aller directement au coût maximal de 1000.
+Cependant, ça dure trop longtemps pour les deux méthodes, on va modifier les hyperparamètres pour réduire le temps d’exécution tout en essayant de maintenir une bonne qualité de solution :
+```
+GA_DEFAULT_POPULATION_SIZE = 400
+GA_DEFAULT_GENERATIONS = 500
+GA_DEFAULT_CROSSOVER_RATE = 0.90
+GA_DEFAULT_MUTATION_RATE = 0.08
+GA_DEFAULT_ELITE_SIZE = 1
+GA_DEFAULT_TOURNAMENT_SIZE = 2
+TS_DEFAULT_MAX_ITERATIONS = 2000
+TS_DEFAULT_TABU_TENURE = 10
+TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
+TS_DEFAULT_ASPIRATION_CRITERIA = True
+```

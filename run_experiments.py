@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -56,7 +57,7 @@ def plot_solution_routes(problem, solution, title: str, output_path: Path, use_t
     )
 
     non_empty_routes = [route for route in solution.routes if not route.is_empty()]
-    cmap = plt.cm.get_cmap("tab20", max(len(non_empty_routes), 1))
+    cmap = plt.get_cmap("tab20", max(len(non_empty_routes), 1))
 
     for idx, route in enumerate(non_empty_routes):
         color = cmap(idx)

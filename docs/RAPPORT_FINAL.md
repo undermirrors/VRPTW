@@ -1,7 +1,7 @@
 # RAPPORT - Optimisation Discrète : Vehicle Routing Problem with Time Windows
 
 **Auteurs:** Thibaut LARACINE, Louka PESIC  
-**Date:** Juin 2024  
+**Date:** Mai 2026  
 **Cours:** Optimisation Discrète - Filière Informatique  
 **Professeur:** Stéphane Bonnevay - Polytech Lyon
 
