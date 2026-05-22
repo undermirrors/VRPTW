@@ -92,6 +92,9 @@ TS_DEFAULT_ASPIRATION_CRITERIA = True
 Le passage à population = 400 et tournament = 2 aide souvent à casser la convergence prématurée, tandis que mutation = 0.08 réinjecte un peu plus de nouveauté sans rendre l’évolution chaotique.
 Côté TS, neighborhood = 500 te donne plus d’options locales sans aller directement au coût maximal de 1000.
 Cependant, ça dure trop longtemps pour les deux méthodes, on va modifier les hyperparamètres pour réduire le temps d’exécution tout en essayant de maintenir une bonne qualité de solution :
+
+## TEST_2
+
 ```
 GA_DEFAULT_POPULATION_SIZE = 400
 GA_DEFAULT_GENERATIONS = 500
@@ -106,7 +109,6 @@ TS_DEFAULT_ASPIRATION_CRITERIA = True
 ```
 
 
-## TEST_3
 
 GA: Evolution complete. Best vehicles: 11, Best distance: 1605.25
 TS (VRPTW): Starting search from distance 14.00
@@ -162,7 +164,7 @@ TS_DEFAULT_TABU_TENURE = 10
 TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 TS_DEFAULT_ASPIRATION_CRITERIA = True
 
-## TEST_4
+## TEST_3
 
 TS: Search complete. Feasible : True, Best vehicles: 12, Best distance: 1256.18
 GA -> dist=1661.91, K=11, feasible=True, time=96.59s
