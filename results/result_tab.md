@@ -108,17 +108,6 @@ TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 TS_DEFAULT_ASPIRATION_CRITERIA = True
 ```
 
-
-
-GA: Evolution complete. Best vehicles: 11, Best distance: 1605.25
-TS (VRPTW): Starting search from distance 14.00
-TS: Tabu tenure = 10, neighborhood = 150
- Iter 1634: No improvement for 401 iterations, stopping
-TS: Search complete. Feasible : True, Best vehicles: 12, Best distance: 1266.23
-GA -> dist=1605.25, K=11, feasible=True, time=157.01s
-TS -> dist=1266.23, K=12, feasible=True, time=100.29s
-Winner: GA
-
 ====================================================================================================
 TABLEAU 2 : RESULTATS MODE VRP (sans fenetres de temps)
 ====================================================================================================
@@ -149,12 +138,11 @@ data1202          1948.61     10       True      1638.55     12       True      
 data201           1977.78     12       True      1516.68     14       True                   GA
 data202           1605.25     11       True      1266.23     12       True                   GA
 
-Résultats sauvegardés dans : C:\Users\louka\Documents\2 - Ecole\4A\opti discrète\VRPTW\results\comprehensive_results.json
-Graphes sauvegardés dans : C:\Users\louka\Documents\2 - Ecole\4A\opti discrète\VRPTW\results\plots
-Images des solutions sauvegardées dans : C:\Users\louka\Documents\2 - Ecole\4A\opti discrète\VRPTW\results\solutions
+## TEST_3
 
+```
 GA_DEFAULT_POPULATION_SIZE = 400
-GA_DEFAULT_GENERATIONS = 500
+GA_DEFAULT_GENERATIONS = 300
 GA_DEFAULT_CROSSOVER_RATE = 0.90
 GA_DEFAULT_MUTATION_RATE = 0.08
 GA_DEFAULT_ELITE_SIZE = 1
@@ -163,13 +151,7 @@ TS_DEFAULT_MAX_ITERATIONS = 2000
 TS_DEFAULT_TABU_TENURE = 10
 TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 TS_DEFAULT_ASPIRATION_CRITERIA = True
-
-## TEST_3
-
-TS: Search complete. Feasible : True, Best vehicles: 12, Best distance: 1256.18
-GA -> dist=1661.91, K=11, feasible=True, time=96.59s
-TS -> dist=1256.18, K=12, feasible=True, time=108.69s
-Winner: GA
+```
 
 ====================================================================================================
 TABLEAU 2 : RESULTATS MODE VRP (sans fenetres de temps)
@@ -201,14 +183,47 @@ data1202          1982.43     10       True      1505.24     11       True      
 data201           2020.47     12       True      1447.47     14       True                   GA
 data202           1661.91     11       True      1256.18     12       True                   GA
 
+# TEST 4 
 
+```
 GA_DEFAULT_POPULATION_SIZE = 400
-GA_DEFAULT_GENERATIONS = 300
+GA_DEFAULT_GENERATIONS = 500
 GA_DEFAULT_CROSSOVER_RATE = 0.90
-GA_DEFAULT_MUTATION_RATE = 0.08
+GA_DEFAULT_MUTATION_RATE = 0.12
 GA_DEFAULT_ELITE_SIZE = 1
 GA_DEFAULT_TOURNAMENT_SIZE = 2
 TS_DEFAULT_MAX_ITERATIONS = 2000
-TS_DEFAULT_TABU_TENURE = 10
+TS_DEFAULT_TABU_TENURE = 12
 TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 TS_DEFAULT_ASPIRATION_CRITERIA = True
+```
+
+====================================================================================================
+TABLEAU 2 : RESULTATS MODE VRP (sans fenetres de temps)
+====================================================================================================
+Problem           GA Dist   GA K      TS Dist   TS K       Winner
+data101           1039.16      8       925.01      8           TS
+data102           1060.29      8       922.76      8           TS
+data1101          1175.37      9      1184.65      9           GA
+data1102          1177.60      9      1228.14      9           GA
+data111           1036.28      8       930.87      8           TS
+data112           1048.44      8       955.53      8           TS
+data1201           743.40      2       776.51      2           GA
+data1202           744.97      2       762.28      2           GA
+data201            766.75      2       794.07      2           GA
+data202            757.02      2       787.61      2           GA
+
+====================================================================================================
+TABLEAU 3 : RESULTATS MODE VRPTW (avec fenetres de temps)
+====================================================================================================
+Problem           GA Dist   GA K    GA Feas      TS Dist   TS K    TS Feas               Winner
+data101           2031.37     25       True      1823.19     23       True                   TS
+data102           1852.66     23       True      1620.08     22       True                   TS
+data1101          2169.20     22       True      1972.29     21       True                   TS
+data1102          2217.96     20       True      1749.69     19       True                   TS
+data111           1442.25     16       True      1310.47     16       True                   TS
+data112           1152.38     12       True      1131.91     13       True                   GA
+data1201          2223.52     12       True      1959.07     13       True                   GA
+data1202          1970.39      9       True      1529.92     12       True                   GA
+data201           1910.61     11       True      1401.06     13       True                   GA
+data202           1579.10     12       True      1299.62     12       True                   TS

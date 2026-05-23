@@ -1,0 +1,1193 @@
+{
+  "vrp_results": {
+    "data101": {
+      "problem_name": "data101",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 107.89572529,
+        "distance": 1039.1623907037138,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1039.1623907037138,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 129.89529883796422,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 200.0,
+          "min_load": 77.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 65.61176513799998,
+        "distance": 925.0090272876936,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 925.0090272876936,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 115.6261284109617,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 200.0,
+          "min_load": 102.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data101/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data101/ts_vrp_solution.png"
+      }
+    },
+    "data102": {
+      "problem_name": "data102",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 108.91177540900003,
+        "distance": 1060.2909276348344,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1060.2909276348344,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 132.5363659543543,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 200.0,
+          "min_load": 88.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 74.93488292200004,
+        "distance": 922.7575455974692,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 922.7575455974692,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 115.34469319968365,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 200.0,
+          "min_load": 125.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data102/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data102/ts_vrp_solution.png"
+      }
+    },
+    "data1101": {
+      "problem_name": "data1101",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 112.957809129,
+        "distance": 1175.3685403953648,
+        "num_vehicles": 9,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1175.3685403953648,
+          "num_vehicles": 9,
+          "avg_distance_per_vehicle": 130.59650448837385,
+          "avg_load_per_vehicle": 191.55555555555554,
+          "avg_clients_per_vehicle": 11.11111111111111,
+          "max_load": 200.0,
+          "min_load": 170.0,
+          "capacity_utilization": 0.9577777777777777,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 77.62281868900004,
+        "distance": 1184.6506468925497,
+        "num_vehicles": 9,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1184.6506468925497,
+          "num_vehicles": 9,
+          "avg_distance_per_vehicle": 131.62784965472775,
+          "avg_load_per_vehicle": 191.55555555555554,
+          "avg_clients_per_vehicle": 11.11111111111111,
+          "max_load": 200.0,
+          "min_load": 162.0,
+          "capacity_utilization": 0.9577777777777777,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1101/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1101/ts_vrp_solution.png"
+      }
+    },
+    "data1102": {
+      "problem_name": "data1102",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 109.74140972200007,
+        "distance": 1177.5962114510364,
+        "num_vehicles": 9,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1177.5962114510364,
+          "num_vehicles": 9,
+          "avg_distance_per_vehicle": 130.8440234945596,
+          "avg_load_per_vehicle": 191.55555555555554,
+          "avg_clients_per_vehicle": 11.11111111111111,
+          "max_load": 200.0,
+          "min_load": 150.0,
+          "capacity_utilization": 0.9577777777777777,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 51.77349223200008,
+        "distance": 1228.1447391587815,
+        "num_vehicles": 9,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1228.1447391587815,
+          "num_vehicles": 9,
+          "avg_distance_per_vehicle": 136.46052657319794,
+          "avg_load_per_vehicle": 191.55555555555554,
+          "avg_clients_per_vehicle": 11.11111111111111,
+          "max_load": 200.0,
+          "min_load": 157.0,
+          "capacity_utilization": 0.9577777777777777,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1102/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1102/ts_vrp_solution.png"
+      }
+    },
+    "data111": {
+      "problem_name": "data111",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 110.65267316399968,
+        "distance": 1036.2768667174782,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1036.2768667174782,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 129.53460833968478,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 199.0,
+          "min_load": 111.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 46.163990442999875,
+        "distance": 930.8707045586486,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 930.8707045586486,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 116.35883806983108,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 199.0,
+          "min_load": 144.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data111/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data111/ts_vrp_solution.png"
+      }
+    },
+    "data112": {
+      "problem_name": "data112",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 111.03671476399995,
+        "distance": 1048.4386169073443,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1048.4386169073443,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 131.05482711341804,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 200.0,
+          "min_load": 67.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 41.07837906500026,
+        "distance": 955.5321774921941,
+        "num_vehicles": 8,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 955.5321774921941,
+          "num_vehicles": 8,
+          "avg_distance_per_vehicle": 119.44152218652427,
+          "avg_load_per_vehicle": 182.25,
+          "avg_clients_per_vehicle": 12.5,
+          "max_load": 200.0,
+          "min_load": 87.0,
+          "capacity_utilization": 0.91125,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data112/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data112/ts_vrp_solution.png"
+      }
+    },
+    "data1201": {
+      "problem_name": "data1201",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 121.23102076099985,
+        "distance": 743.3982194479463,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 743.3982194479463,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 371.69910972397315,
+          "avg_load_per_vehicle": 862.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 1000.0,
+          "min_load": 724.0,
+          "capacity_utilization": 0.862,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 40.972346810999625,
+        "distance": 776.5055143022228,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 776.5055143022228,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 388.2527571511114,
+          "avg_load_per_vehicle": 862.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 958.0,
+          "min_load": 766.0,
+          "capacity_utilization": 0.862,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1201/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1201/ts_vrp_solution.png"
+      }
+    },
+    "data1202": {
+      "problem_name": "data1202",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 122.51184925299958,
+        "distance": 744.9710267336948,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 744.9710267336948,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 372.4855133668474,
+          "avg_load_per_vehicle": 862.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 1000.0,
+          "min_load": 724.0,
+          "capacity_utilization": 0.862,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 44.09595533399988,
+        "distance": 762.2815355572029,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 762.2815355572029,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 381.14076777860146,
+          "avg_load_per_vehicle": 862.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 973.0,
+          "min_load": 751.0,
+          "capacity_utilization": 0.862,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1202/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1202/ts_vrp_solution.png"
+      }
+    },
+    "data201": {
+      "problem_name": "data201",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 122.09226030199989,
+        "distance": 766.7499334427209,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 766.7499334427209,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 383.37496672136047,
+          "avg_load_per_vehicle": 729.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 998.0,
+          "min_load": 460.0,
+          "capacity_utilization": 0.729,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 13.651325003999773,
+        "distance": 794.0718071587439,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 794.0718071587439,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 397.03590357937196,
+          "avg_load_per_vehicle": 729.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 998.0,
+          "min_load": 460.0,
+          "capacity_utilization": 0.729,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data201/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data201/ts_vrp_solution.png"
+      }
+    },
+    "data202": {
+      "problem_name": "data202",
+      "mode": "VRP",
+      "use_time_windows": false,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 123.81459486900076,
+        "distance": 757.0177097516255,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 757.0177097516255,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 378.50885487581274,
+          "avg_load_per_vehicle": 729.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 998.0,
+          "min_load": 460.0,
+          "capacity_utilization": 0.729,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 25.80256016600015,
+        "distance": 787.6081177363762,
+        "num_vehicles": 2,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 787.6081177363762,
+          "num_vehicles": 2,
+          "avg_distance_per_vehicle": 393.8040588681881,
+          "avg_load_per_vehicle": 729.0,
+          "avg_clients_per_vehicle": 50.0,
+          "max_load": 946.0,
+          "min_load": 512.0,
+          "capacity_utilization": 0.729,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": false,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data202/ga_vrp_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data202/ts_vrp_solution.png"
+      }
+    }
+  },
+  "vrptw_results": {
+    "data101": {
+      "problem_name": "data101",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 178.39497359399996,
+        "distance": 2031.3678250032883,
+        "num_vehicles": 25,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 2031.3678250032883,
+          "num_vehicles": 25,
+          "avg_distance_per_vehicle": 81.25471300013153,
+          "avg_load_per_vehicle": 58.32,
+          "avg_clients_per_vehicle": 4.0,
+          "max_load": 102.0,
+          "min_load": 19.0,
+          "capacity_utilization": 0.2916,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 94.55034152000002,
+        "distance": 1823.191168845884,
+        "num_vehicles": 23,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1823.191168845884,
+          "num_vehicles": 23,
+          "avg_distance_per_vehicle": 79.26918125416887,
+          "avg_load_per_vehicle": 63.391304347826086,
+          "avg_clients_per_vehicle": 4.3478260869565215,
+          "max_load": 93.0,
+          "min_load": 31.0,
+          "capacity_utilization": 0.3169565217391304,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data101/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data101/ts_vrptw_solution.png"
+      }
+    },
+    "data102": {
+      "problem_name": "data102",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 175.62304654800005,
+        "distance": 1852.6618190234071,
+        "num_vehicles": 23,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1852.6618190234071,
+          "num_vehicles": 23,
+          "avg_distance_per_vehicle": 80.55051387058292,
+          "avg_load_per_vehicle": 63.391304347826086,
+          "avg_clients_per_vehicle": 4.3478260869565215,
+          "max_load": 159.0,
+          "min_load": 14.0,
+          "capacity_utilization": 0.3169565217391304,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 159.30662373699988,
+        "distance": 1620.0836134950337,
+        "num_vehicles": 22,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1620.0836134950337,
+          "num_vehicles": 22,
+          "avg_distance_per_vehicle": 73.64016424977426,
+          "avg_load_per_vehicle": 66.27272727272727,
+          "avg_clients_per_vehicle": 4.545454545454546,
+          "max_load": 153.0,
+          "min_load": 15.0,
+          "capacity_utilization": 0.33136363636363636,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data102/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data102/ts_vrptw_solution.png"
+      }
+    },
+    "data1101": {
+      "problem_name": "data1101",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 178.0477286129999,
+        "distance": 2169.1996613188644,
+        "num_vehicles": 22,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 2169.1996613188644,
+          "num_vehicles": 22,
+          "avg_distance_per_vehicle": 98.59998460540292,
+          "avg_load_per_vehicle": 78.36363636363636,
+          "avg_clients_per_vehicle": 4.545454545454546,
+          "max_load": 149.0,
+          "min_load": 6.0,
+          "capacity_utilization": 0.39181818181818184,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 154.95579441699988,
+        "distance": 1972.2924953268728,
+        "num_vehicles": 21,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1972.2924953268728,
+          "num_vehicles": 21,
+          "avg_distance_per_vehicle": 93.91869025366061,
+          "avg_load_per_vehicle": 82.0952380952381,
+          "avg_clients_per_vehicle": 4.761904761904762,
+          "max_load": 123.0,
+          "min_load": 41.0,
+          "capacity_utilization": 0.4104761904761905,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1101/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1101/ts_vrptw_solution.png"
+      }
+    },
+    "data1102": {
+      "problem_name": "data1102",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 171.50823409199984,
+        "distance": 2217.9602361312222,
+        "num_vehicles": 20,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 2217.9602361312222,
+          "num_vehicles": 20,
+          "avg_distance_per_vehicle": 110.89801180656112,
+          "avg_load_per_vehicle": 86.2,
+          "avg_clients_per_vehicle": 5.0,
+          "max_load": 146.0,
+          "min_load": 13.0,
+          "capacity_utilization": 0.431,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 147.783823707,
+        "distance": 1749.6918901749411,
+        "num_vehicles": 19,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1749.6918901749411,
+          "num_vehicles": 19,
+          "avg_distance_per_vehicle": 92.08904685131269,
+          "avg_load_per_vehicle": 90.73684210526316,
+          "avg_clients_per_vehicle": 5.2631578947368425,
+          "max_load": 154.0,
+          "min_load": 32.0,
+          "capacity_utilization": 0.4536842105263158,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1102/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1102/ts_vrptw_solution.png"
+      }
+    },
+    "data111": {
+      "problem_name": "data111",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 171.93947910000043,
+        "distance": 1442.2460184023582,
+        "num_vehicles": 16,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1442.2460184023582,
+          "num_vehicles": 16,
+          "avg_distance_per_vehicle": 90.14037615014739,
+          "avg_load_per_vehicle": 91.125,
+          "avg_clients_per_vehicle": 6.25,
+          "max_load": 157.0,
+          "min_load": 37.0,
+          "capacity_utilization": 0.455625,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 60.44988367299993,
+        "distance": 1310.4677785992728,
+        "num_vehicles": 16,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1310.4677785992728,
+          "num_vehicles": 16,
+          "avg_distance_per_vehicle": 81.90423616245455,
+          "avg_load_per_vehicle": 91.125,
+          "avg_clients_per_vehicle": 6.25,
+          "max_load": 133.0,
+          "min_load": 36.0,
+          "capacity_utilization": 0.455625,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data111/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data111/ts_vrptw_solution.png"
+      }
+    },
+    "data112": {
+      "problem_name": "data112",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 200.0,
+      "genetic_algorithm": {
+        "execution_time": 178.4874986750001,
+        "distance": 1152.377945359657,
+        "num_vehicles": 12,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1152.377945359657,
+          "num_vehicles": 12,
+          "avg_distance_per_vehicle": 96.03149544663808,
+          "avg_load_per_vehicle": 121.5,
+          "avg_clients_per_vehicle": 8.333333333333334,
+          "max_load": 195.0,
+          "min_load": 59.0,
+          "capacity_utilization": 0.6075,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 85.05678268400015,
+        "distance": 1131.912341455805,
+        "num_vehicles": 13,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1131.912341455805,
+          "num_vehicles": 13,
+          "avg_distance_per_vehicle": 87.07018011198501,
+          "avg_load_per_vehicle": 112.15384615384616,
+          "avg_clients_per_vehicle": 7.6923076923076925,
+          "max_load": 158.0,
+          "min_load": 72.0,
+          "capacity_utilization": 0.5607692307692308,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data112/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data112/ts_vrptw_solution.png"
+      }
+    },
+    "data1201": {
+      "problem_name": "data1201",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 170.83404786200026,
+        "distance": 2223.524445713395,
+        "num_vehicles": 12,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 2223.524445713395,
+          "num_vehicles": 12,
+          "avg_distance_per_vehicle": 185.29370380944957,
+          "avg_load_per_vehicle": 143.66666666666666,
+          "avg_clients_per_vehicle": 8.333333333333334,
+          "max_load": 226.0,
+          "min_load": 26.0,
+          "capacity_utilization": 0.14366666666666666,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 48.418331201,
+        "distance": 1959.0730710505884,
+        "num_vehicles": 13,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1959.0730710505884,
+          "num_vehicles": 13,
+          "avg_distance_per_vehicle": 150.69792854235294,
+          "avg_load_per_vehicle": 132.6153846153846,
+          "avg_clients_per_vehicle": 7.6923076923076925,
+          "max_load": 257.0,
+          "min_load": 35.0,
+          "capacity_utilization": 0.1326153846153846,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1201/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1201/ts_vrptw_solution.png"
+      }
+    },
+    "data1202": {
+      "problem_name": "data1202",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 174.32872402500016,
+        "distance": 1970.3890882031317,
+        "num_vehicles": 9,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1970.3890882031317,
+          "num_vehicles": 9,
+          "avg_distance_per_vehicle": 218.93212091145907,
+          "avg_load_per_vehicle": 191.55555555555554,
+          "avg_clients_per_vehicle": 11.11111111111111,
+          "max_load": 243.0,
+          "min_load": 105.0,
+          "capacity_utilization": 0.19155555555555556,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 128.01217835399984,
+        "distance": 1529.9202630289199,
+        "num_vehicles": 12,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1529.9202630289199,
+          "num_vehicles": 12,
+          "avg_distance_per_vehicle": 127.49335525240998,
+          "avg_load_per_vehicle": 143.66666666666666,
+          "avg_clients_per_vehicle": 8.333333333333334,
+          "max_load": 268.0,
+          "min_load": 27.0,
+          "capacity_utilization": 0.14366666666666666,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1202/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data1202/ts_vrptw_solution.png"
+      }
+    },
+    "data201": {
+      "problem_name": "data201",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 184.89093999599982,
+        "distance": 1910.6140988056509,
+        "num_vehicles": 11,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1910.6140988056509,
+          "num_vehicles": 11,
+          "avg_distance_per_vehicle": 173.6921908005137,
+          "avg_load_per_vehicle": 132.54545454545453,
+          "avg_clients_per_vehicle": 9.090909090909092,
+          "max_load": 211.0,
+          "min_load": 65.0,
+          "capacity_utilization": 0.13254545454545455,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 99.59366745899979,
+        "distance": 1401.0570783681662,
+        "num_vehicles": 13,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1401.0570783681662,
+          "num_vehicles": 13,
+          "avg_distance_per_vehicle": 107.77362141293587,
+          "avg_load_per_vehicle": 112.15384615384616,
+          "avg_clients_per_vehicle": 7.6923076923076925,
+          "max_load": 202.0,
+          "min_load": 20.0,
+          "capacity_utilization": 0.11215384615384616,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "GA",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data201/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data201/ts_vrptw_solution.png"
+      }
+    },
+    "data202": {
+      "problem_name": "data202",
+      "mode": "VRPTW",
+      "use_time_windows": true,
+      "num_clients": 100,
+      "capacity": 1000.0,
+      "genetic_algorithm": {
+        "execution_time": 180.67822996799987,
+        "distance": 1579.100604063292,
+        "num_vehicles": 12,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1579.100604063292,
+          "num_vehicles": 12,
+          "avg_distance_per_vehicle": 131.59171700527432,
+          "avg_load_per_vehicle": 121.5,
+          "avg_clients_per_vehicle": 8.333333333333334,
+          "max_load": 384.0,
+          "min_load": 26.0,
+          "capacity_utilization": 0.1215,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        },
+        "generation_history": []
+      },
+      "tabu_search": {
+        "execution_time": 122.3208844110004,
+        "distance": 1299.6192027933907,
+        "num_vehicles": 12,
+        "is_feasible": true,
+        "solution_stats": {
+          "total_distance": 1299.6192027933907,
+          "num_vehicles": 12,
+          "avg_distance_per_vehicle": 108.30160023278256,
+          "avg_load_per_vehicle": 121.5,
+          "avg_clients_per_vehicle": 8.333333333333334,
+          "max_load": 190.0,
+          "min_load": 57.0,
+          "capacity_utilization": 0.1215,
+          "unassigned_clients": 0,
+          "duplicate_assignments": 0,
+          "infeasible_routes": 0,
+          "capacity_violations": 0,
+          "late_clients": 0,
+          "use_time_windows": true,
+          "feasible": true
+        }
+      },
+      "winner": "TS",
+      "generated_images": {
+        "ga_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data202/ga_vrptw_solution.png",
+        "ts_solution": "/home/tristantrad/zed_project/VRPTW/results/solutions/data202/ts_vrptw_solution.png"
+      }
+    }
+  },
+  "generated_plots": {
+    "vrp_comparison": "/home/tristantrad/zed_project/VRPTW/results/plots/vrp_comparison.png",
+    "vrptw_comparison": "/home/tristantrad/zed_project/VRPTW/results/plots/vrptw_comparison.png",
+    "ga_ts_evolution_by_dataset": "/home/tristantrad/zed_project/VRPTW/results/plots/ga_ts_evolution_by_dataset.png",
+    "ga_learning_curve_vrp": "/home/tristantrad/zed_project/VRPTW/results/plots/ga_learning_curve_data101_vrp.png",
+    "ga_learning_curve_vrptw": "/home/tristantrad/zed_project/VRPTW/results/plots/ga_learning_curve_data101_vrptw.png"
+  }
+}
