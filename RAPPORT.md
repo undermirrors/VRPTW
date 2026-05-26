@@ -32,7 +32,7 @@ Le VRPTW peut être formalisé comme un problème de programmation mathématique
 - Un ensemble de clients $C = {1, 2, ..., n}$
 - Un dépot (le noeud 0 de notre ensemble de clients)
 - Un ensemble de véhicules $V = {1, 2, ..., K}$. 
-- On se munit de la distance euclidienne entre deux nœuds i et j $d(i,j) = √((x_i - x_j)² + (y_i - y_j)²)$, 
+- On se munit de la distance euclidienne entre deux nœuds i et j $d(i,j) = \sqrt((x_i - x_j)² + (y_i - y_j)²)$, 
 - La quantité demandé par le client i $q_i$
 - La capacité $Q$ que peut porte les véhicules de transport.
 - La fenêtre de temps durant laquelle le client i peut être livré $[a_i, b_i]$ (ready_time, due_time)
@@ -40,34 +40,34 @@ Le VRPTW peut être formalisé comme un problème de programmation mathématique
 
 #### Variable de décisions et fonction objectif
 Pour définir une solution, nous avons ces variables de décisions : 
-- $x_{ijk} ∈ {0,1}$, qui est un booléen valant 1 si le véhicule k traverse l'arc (i,j), 0 sinon.
+- $x_{ijk} \in {0,1}$, qui est un booléen valant 1 si le véhicule k traverse l'arc (i,j), 0 sinon.
 - $t_i$ l'instant d'arrivée au nœud i
 - $r_i$ l'instant de début de service au nœud i
 
 Notre objectif sera dès lors de minimiser la distance total parcouru par les véhicules.
-	$Z = ∑_i∑_j∑_k d(i,j) × x_{ijk}$
+	$Z = \sum_i\sum_j\sum_k d(i,j) × x_{ijk}$
 
 #### Contraintes 
 Nous disposons également de contraintes :  
 ##### Contrainte 1 :
 Chaque client est visité exactement une fois
-	$∑_j∑_k x_{ijk} = 1, ∀i ∈ C$
+	$\sum_j\sum_k x_{ijk} = 1, \forall i \in  C$
 
 ##### Contrainte 2 :
 Chaque véhicule doit revenir à son point de départ
-	$∑_i x_{ijk} = ∑_j x_{jik}, ∀i, j ∈ V ∪ C, ∀k ∈ V$
+	$\sum_i x_{ijk} = \sum_j x_{jik}, \forall i, j \in  V \cup C, \forall k \in  V$
 
 ##### Contrainte 3 :
 La charge totale d'une route ne peut pas dépasser la capacité maximale d'un véhicule 
-	$∑_{i∈route_k} q_i ≤ Q, ∀k ∈ V$
+	$\sum_{i\in route_k} q_i \le Q, \forall k \in  V$
 
 ##### Contrainte 4 :
 Un véhicule doit arriver dans la fenêtre de temps d'un client
-	$a_i ≤ t_i ≤ b_i, ∀i ∈ C ∪ {0}$
+	$a_i \le t_i \le b_i, \forall i \in  C \cup {0}$
 
 ##### Contrainte 5 :
 Un véhicule doit pouvoir arriver dans la fenêtre de temps du voisin suivant
-	$t_j ≥ t_i + s_i + d(i,j)$ si $x_{ij} = 1$
+	$t_j \ge t_i + s_i + d(i,j)$ si $x_{ij} = 1$
 
 ### 2.2 Structures de données utilisées
 
