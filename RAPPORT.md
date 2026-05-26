@@ -296,6 +296,9 @@ Nous obtenons dès lors ces résultats :
 | data1202 | 776.91      | 2           | 832.01      | 2           |
 | data201  | 800.91      | 2           | 802.73      | 2           |
 | data202  | 801.18      | 2           | 802.73      | 2           |
+
+![vrp_comparison.png](results/test_1/plots/vrp_comparison.png)
+
 #### VRPTW (avec fenêtres de temps)
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
@@ -310,40 +313,33 @@ Nous obtenons dès lors ces résultats :
 | data1202 | 2050.96     | 11          | 1554.82     | 11          |
 | data201  | 2194.04     | 12          | 1465.96     | 13          |
 | data202  | 1791.14     | 12          | 1395.96     | 13          |
+
+![vrptw_comparison.png](results/test_1/plots/vrptw_comparison.png)
+
 On remarque dans un premier temps la différence assez importante des résultats sur l'algorithme génétique, qui utiliser bien plus de véhicules et est bien moins performant de manière générale sur les problèmes plus complexe avec les fenêtres de temps. Lors des tests, on a pu remarquer une convergence bien trop rapide (à la génération 50).
+
+![ga_ts_evolution_by_dataset.png](results/test_1/plots/ga_ts_evolution_by_dataset.png)
+
 #### TEST 2
 
 Pour notre test 2, notre objectif était de casser la convergence prématurée, et plus généralement améliorer les performances par une augmentation importantes des ressources.
 
 ```
 GA_DEFAULT_POPULATION_SIZE = 400
-GA_DEFAULT_GENERATIONS = 1000
+GA_DEFAULT_GENERATIONS = 500
 GA_DEFAULT_CROSSOVER_RATE = 0.90
 GA_DEFAULT_MUTATION_RATE = 0.08
 GA_DEFAULT_ELITE_SIZE = 1
 GA_DEFAULT_TOURNAMENT_SIZE = 2
-TS_DEFAULT_MAX_ITERATIONS = 2500
-TS_DEFAULT_TABU_TENURE = 15
-TS_DEFAULT_NEIGHBORHOOD_SIZE = 250
-TS_DEFAULT_ASPIRATION_CRITERIA = True
+TS_DEFAULT_MAX_ITERATIONS = 2000
+TS_DEFAULT_TABU_TENURE = 10
+TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 ```
 
-Le passage à population = 400 et tournament = 2 aide à casser la convergence prématurée, tandis que mutation = 0.08 réinjecte bien plus de nouveauté sans rendre l’évolution chaotique. 
-Côté TS, neighborhood = 500 te donne plus d’options locales sans aller directement au coût maximal de 1000.
-Cependant, ça dure trop longtemps pour les deux méthodes, on va modifier les hyperparamètres pour réduire le temps d’exécution tout en essayant de maintenir une bonne qualité de solution :
+Le passage à population = 400 et tournament = 2 aide à casser la convergence prématurée, tandis que mutation = 0.08 réinjecte bien plus de nouveauté sans rendre l’évolution chaotique. nous avons également augmenté le nombre de génération à 500. Le tournament size à également été réduit pour augmenter la flexibilité.
 
-# TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-
-Problème identifié : Temps d'exécution beaucoup trop long (plusieurs minutes par dataset)
-
-Configuration révisée :
-- GA population : 400, generations : 500
-- TS iterations : 2000, neighborhood : 150
-- Tournament size réduit à 2 (moins de pression élitiste)
-- Mutation rate augmentée à 0.08
-
-Observations : Équilibre acceptable entre temps et qualité. TS toujours dominant en VRP.
-#### VRP (sans fenêtres de temps)
+Côté TS, nous avons bien augmenté le nombre d'itérations maximal à 2000 pour tenter de l'affiner, et neighborhood = 150 te donne plus d’options locales. Nous avons également ajouté un Tabu tenure à 10 pour conserver la liste taboué sur au moins 10 itérations.
+#### VRP
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
 | -------- | ----------- | ----------- | ----------- | ----------- |
@@ -357,29 +353,46 @@ Observations : Équilibre acceptable entre temps et qualité. TS toujours domina
 | data1202 | 745.48      | 2           | 762.43      | 2           |
 | data201  | 764.20      | 2           | 795.73      | 2           |
 | data202  | 764.80      | 2           | 800.66      | 2           |
-#### VRPTW (avec fenêtres de temps)
 
-| Problem  | GA Distance | GA Vehicles | GA Feasible | TS Distance | TS Vehicles |
-| -------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| data101  | 2043.60     | 26          | True        | 1792.60     | 24          |
-| data102  | 1958.14     | 22          | True        | 1669.74     | 22          |
-| data1101 | 2298.05     | 23          | True        | 1877.52     | 21          |
-| data1102 | 2216.75     | 20          | True        | 1817.41     | 20          |
-| data111  | 1511.41     | 18          | True        | 1342.16     | 17          |
-| data112  | 1165.72     | 12          | True        | 1118.34     | 13          |
-| data1201 | 2242.06     | 12          | True        | 1795.48     | 13          |
-| data1202 | 1948.61     | 10          | True        | 1638.55     | 12          |
-| data201  | 1977.78     | 12          | True        | 1516.68     | 14          |
-| data202  | 1605.25     | 11          | True        | 1266.23     | 12          |
+![vrp_comparison.png](results/test_2/plots/vrp_comparison.png)
+
+#### VRPTW
+
+| Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
+| -------- | ----------- | ----------- | ----------- | ----------- |
+| data101  | 2043.60     | 26          | 1792.60     | 24          |
+| data102  | 1958.14     | 22          | 1669.74     | 22          |
+| data1101 | 2298.05     | 23          | 1877.52     | 21          |
+| data1102 | 2216.75     | 20          | 1817.41     | 20          |
+| data111  | 1511.41     | 18          | 1342.16     | 17          |
+| data112  | 1165.72     | 12          | 1118.34     | 13          |
+| data1201 | 2242.06     | 12          | 1795.48     | 13          |
+| data1202 | 1948.61     | 10          | 1638.55     | 12          |
+| data201  | 1977.78     | 12          | 1516.68     | 14          |
+| data202  | 1605.25     | 11          | 1266.23     | 12          |
+
+![vrptw_comparison.png](results/test_2/plots/vrptw_comparison.png)
+
+Avec ces modifications, les deux métaheuristique ont gagné en efficacité, notamment le GA qui à bien rattrapé son retard, même s'il y a encore des écarts importants sur le VRPTW (près de 400 de distance supplémentaires par rapport au TS, même si le GA trouve des solutions avec un nombre de véhicule réduit.GA_DEFAULT_POPULATION_SIZE = 400
+
+![ga_ts_evolution_by_dataset.png](results/test_2/plots/ga_ts_evolution_by_dataset.png)
+
 #### TEST 3 : Réduction des générations GA
 
-Objectif : accélérer davantage sans perdre la qualité.
+Lors de nos précédents tests, nous avons remarqué que la convergence avait lieu aux alentours de 250/300. Etant donné le temps conséquents pour effectuer les calculs (~1h30 sur nos machines personnelles), en particulier la GA, nous avons  réduit le nombre de génération pour le GA, en passant de 500 à 300 générations, l'objectif étant d'accélérer les calculs pour ne pas être trop pénalisé par le temps de calculs, sans perdre en qualité.
 
-- GA generations : 300
-- Autres paramètres : identiques à TEST 2
-
-Observations : Performances similaires à TEST 2 mais temps d'exécution réduit de ~40%.
-#### VRP (sans fenêtres de temps)
+```
+GA_DEFAULT_POPULATION_SIZE = 400
+GA_DEFAULT_GENERATIONS = 300
+GA_DEFAULT_CROSSOVER_RATE = 0.90
+GA_DEFAULT_MUTATION_RATE = 0.08
+GA_DEFAULT_ELITE_SIZE = 1
+GA_DEFAULT_TOURNAMENT_SIZE = 2
+TS_DEFAULT_MAX_ITERATIONS = 2000
+TS_DEFAULT_TABU_TENURE = 10
+TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
+```
+#### VRP
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
 | -------- | ----------- | ----------- | ----------- | ----------- |
@@ -393,30 +406,49 @@ Observations : Performances similaires à TEST 2 mais temps d'exécution réduit
 | data1202 | 744.26      | 2           | 768.24      | 2           |
 | data201  | 768.07      | 2           | 798.72      | 2           |
 | data202  | 783.04      | 2           | 795.35      | 2           |
-#### VRPTW (avec fenêtres de temps)
 
-| Problem  | GA Distance | GA Vehicles | GA Feasible | TS Distance | TS Vehicles |
-| -------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| data101  | 2197.03     | 28          | True        | 1813.39     | 23          |
-| data102  | 2032.28     | 23          | True        | 1619.30     | 21          |
-| data1101 | 2158.56     | 22          | True        | 1996.94     | 21          |
-| data1102 | 2275.61     | 21          | True        | 1808.94     | 21          |
-| data111  | 1533.89     | 18          | True        | 1391.62     | 18          |
-| data112  | 1153.80     | 12          | True        | 1154.97     | 13          |
-| data1201 | 2319.18     | 12          | True        | 1888.66     | 12          |
-| data1202 | 1982.43     | 10          | True        | 1505.24     | 11          |
-| data201  | 2020.47     | 12          | True        | 1447.47     | 14          |
-| data202  | 1661.91     | 11          | True        | 1256.18     | 12          |
+![vrp_comparison.png](results/test_3/plots/vrp_comparison.png)
+
+#### VRPTW
+
+| Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
+| -------- | ----------- | ----------- | ----------- | ----------- |
+| data101  | 2197.03     | 28          | 1813.39     | 23          |
+| data102  | 2032.28     | 23          | 1619.30     | 21          |
+| data1101 | 2158.56     | 22          | 1996.94     | 21          |
+| data1102 | 2275.61     | 21          | 1808.94     | 21          |
+| data111  | 1533.89     | 18          | 1391.62     | 18          |
+| data112  | 1153.80     | 12          | 1154.97     | 13          |
+| data1201 | 2319.18     | 12          | 1888.66     | 12          |
+| data1202 | 1982.43     | 10          | 1505.24     | 11          |
+| data201  | 2020.47     | 12          | 1447.47     | 14          |
+| data202  | 1661.91     | 11          | 1256.18     | 12          |
+
+![vrptw_comparison.png](results/test_3/plots/vrptw_comparison.png)
+
+Nous pouvons dès lors remarquer des résultats similaires à notre test 2, mais avec un temps d’exécution amoindries (réduit de ~30% ! ).
+
+![ga_ts_evolution_by_dataset.png](results/test_3/plots/ga_ts_evolution_by_dataset.png)
 
 #### TEST 4 : Configuration finale optimisée
 
-Augmentation légère de la mutation pour améliorer les performances du GA en VRPTW.
+Après de multiple modifications légère, nous avons fini sur ces hyperparamètres : 
 
-- GA mutation rate : 0.12 (TEST 3 : 0.08)
-- TS tabu tenure : 12 (TEST 3 : 10)
-- Tous autres paramètres inchangés depuis TEST 3
+```
+GA_DEFAULT_POPULATION_SIZE = 400
+GA_DEFAULT_GENERATIONS = 500
+GA_DEFAULT_CROSSOVER_RATE = 0.90
+GA_DEFAULT_MUTATION_RATE = 0.12
+GA_DEFAULT_ELITE_SIZE = 1
+GA_DEFAULT_TOURNAMENT_SIZE = 2
+TS_DEFAULT_MAX_ITERATIONS = 2000
+TS_DEFAULT_TABU_TENURE = 12
+TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
+TS_DEFAULT_ASPIRATION_CRITERIA = True
+```
 
-#### VRP (sans fenêtres de temps)
+Pour le GA, nous avons augmenté le taux de mutation à 0.12 (et finalement remis le nombre de générations à 500 pour être en cohérence avec ce taux), et pour le TS nous avons simplement augmenté la tabu tenure à 12 (le max_iterations ne semblant pas influer plus que ça sur le résultat). Nous avons dès lors obtenu ces résultats :
+#### VRP
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
 | -------- | ----------- | ----------- | ----------- | ----------- |
@@ -430,38 +462,29 @@ Augmentation légère de la mutation pour améliorer les performances du GA en V
 | data1202 | 744.97      | 2           | 762.28      | 2           |
 | data201  | 766.75      | 2           | 794.07      | 2           |
 | data202  | 757.02      | 2           | 787.61      | 2           |
-#### VRPTW (avec fenêtres de temps)
 
-| Problem  | GA Distance | GA Vehicles | GA Feasible | TS Distance | TS Vehicles |
-| -------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| data101  | 2031.37     | 25          | True        | 1823.19     | 23          |
-| data102  | 1852.66     | 23          | True        | 1620.08     | 22          |
-| data1101 | 2169.20     | 22          | True        | 1972.29     | 21          |
-| data1102 | 2217.96     | 20          | True        | 1749.69     | 19          |
-| data111  | 1442.25     | 16          | True        | 1310.47     | 16          |
-| data112  | 1152.38     | 12          | True        | 1131.91     | 13          |
-| data1201 | 2223.52     | 12          | True        | 1959.07     | 13          |
-| data1202 | 1970.39     | 9           | True        | 1529.92     | 12          |
-| data201  | 1910.61     | 11          | True        | 1401.06     | 13          |
-| data202  | 1579.10     | 12          | True        | 1299.62     | 12          |
+![vrp_comparison.png](results/test_3/plots/vrp_comparison.png)
 
-Paramètres finaux retenus :
+#### VRPTW
 
-| Paramètre GA | Valeur |
-|------------|--------|
-| Population | 400 |
-| Generations | 500 |
-| Crossover rate | 0.90 |
-| Mutation rate | 0.12 |
-| Elite size | 1 |
-| Tournament size | 2 |
+| Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
+| -------- | ----------- | ----------- | ----------- | ----------- |
+| data101  | 2031.37     | 25          | 1823.19     | 23          |
+| data102  | 1852.66     | 23          | 1620.08     | 22          |
+| data1101 | 2169.20     | 22          | 1972.29     | 21          |
+| data1102 | 2217.96     | 20          | 1749.69     | 19          |
+| data111  | 1442.25     | 16          | 1310.47     | 16          |
+| data112  | 1152.38     | 12          | 1131.91     | 13          |
+| data1201 | 2223.52     | 12          | 1959.07     | 13          |
+| data1202 | 1970.39     | 9           | 1529.92     | 12          |
+| data201  | 1910.61     | 11          | 1401.06     | 13          |
+| data202  | 1579.10     | 12          | 1299.62     | 12          |
 
-| Paramètre TS | Valeur |
-|------------|--------|
-| Max iterations | 2000 |
-| Tabu tenure | 12 |
-| Neighborhood size | 150 |
-| Aspiration criteria | True |
+![vrptw_comparison.png](results/test_3/plots/vrptw_comparison.png)
+
+Nous obtenons dès lors ce graphe : 
+
+![ga_ts_evolution_by_dataset.png](results/test_3/plots/ga_ts_evolution_by_dataset.png)
 
 ---
 
@@ -471,24 +494,16 @@ Paramètres finaux retenus :
 
 #### Tendances générales
 
-Tabu Search domine pour les problèmes de petite taille (data101, data102, data111, data112) :
-- TS gagne constamment sur ces 4 instances (50 clients)
-- Gain moyen : 8-10% sur la distance
-- TS génère des solutions de meilleure qualité grâce à la recherche locale intensive
+De manière générale, le TS dominer fortement  domine pour les problèmes avec les temps d'ouverture du dépots restreints (data101, data102, data111, data112), TS gagne constamment sur ces instances.
 
-Algorithme Génétique préfère pour les problèmes avec faible nombre de véhicules (data1201, data1202, data201, data202) :
-- GA gagne 6/10 instances au TEST 4 final
-- Sur instances moyennes-grandes (100 clients), GA produit des solutions plus compactes
-- Écart réduit avec l'augmentation de la population (TEST 2-4)
+L'algorithme génétique quant à lui s'est montré peu efficace dans les premiers essais, et nécessite des temps de calculs bien plus importants pour être efficace. Cependant, celui-ci, si bien configuré, semble pouvoir s'améliorer continuellement, à condition de lui donner un nombre de génération conséquent (et donc du temps et un pc puissant, ce que nous n'avions pas)
 
 #### Analyse statistique
 
-| Métrique | TS Performance | GA Performance |
-|----------|----------------|-----------------|
-| Instances gagnées (TEST 4) | 4/10 | 6/10 |
-| Gain distance moyen | -3.2% | +2.8% vs TS |
-| Stabilité | Très stable | Améliore progressivement |
-| Temps d'exécution | <2s/instance | 3-5s/instance |
+| Métrique                   | TS Performance | GA Performance           |
+| -------------------------- | -------------- | ------------------------ |
+| Stabilité                  | Très stable    | Améliore progressivement |
+| Temps d'exécution          | Rapide/Moyen   | Moyen/Très long          |
 
 La transition dans les performances s'explique par la structure des problèmes : 
 - Petits problèmes : TS converge rapidement vers optima local de bonne qualité
@@ -505,68 +520,25 @@ Distance supplémentaire due aux fenêtres :
 - data201 : 794.07 (VRP) → 1401.06 (VRPTW) = +76%
 
 Nombre de véhicules nécessaires :
-- VRP : moyenne 5.4 véhicules
-- VRPTW : moyenne 18.8 véhicules
+- VRP : moyenne ~5 véhicules
+- VRPTW : moyenne ~19 véhicules
 
 #### Performance comparative
 
 Tabu Search reste dominant en VRPTW moyenne-petite (TEST 4) :
-- 5/10 instances gagnées
 - Meilleur sur data101, data102, data1101, data1102, data111
 - L'intensification de la recherche locale aide à respecter les fenêtres
 
-Algorithme Génétique compétitif sur instances complexes (data112, data1201, data1202, data201, data202) :
-- 5/10 instances gagnées
-- Le GA produit des solutions avec différentes structures de routes qui peuvent mieux accommoder les fenêtres
-
-#### Anomalie notable
-
-data202 (TEST 4) : TS gagne avec vecteur (12, 1299.62) vs GA (12, 1579.10)
-- TS parvient à optimiser la distance sur un même nombre de véhicules
-- Démontre l'efficacité de 2-opt sur cette instance particulière
-
+L'algorithme génétique semble cependant plus compétitif la encore sur des instances complexes, (pour peu qu'on lui donne le nombre de génération nécessaire...)
 ### 7.3 Impact des hyperparamètres
 
 #### Population et Générations du GA
 
-TEST 1 vs TEST 2 : Augmentation de population (50→400) et générations (100→500)
-- Amélioration distance GA : moyenne -3.2% en VRP
-- Convergence prématurée du GA (TEST 1) à generation ~50/100
-- TEST 2+ justifie les paramètres accrus
+Les hyperparamètres sont absolument essentiels pour obtenir des résultats performants. En effet, nous avons pu remarquer à travers nos tests à quel point la différence des résultats peuvent réellement varier, en particulier entre le test 1 et le test 4, qui a permis une évolution significatif en réglant correctement les paramètres pour gérer correctement l'exploration et la convergence, et même faire perdre du temps pour peu de valeurs ajouté, comme par exemple avec le test 2 et 3, qui ont des resultats similaire alors que le test 3 à une réduction de générations de 200, mais avec des telos réduit de ~30%. Ainsi, la configuration du test 3 offre bon compromis temps/qualité.
 
-TEST 2 vs TEST 3 : Réduction générations (500→300)
-- Différences mineures sur qualité solution
-- Temps d'exécution réduit de ~40%
-- Configuration TEST 3 offre bon compromis temps/qualité
+### 7.4 Faisabilité
 
-#### Taille du tournament et mutation
-
-Tournament size réduit de 3 à 2 (TEST 1 vs TEST 2) :
-- Réduit la pression sélective
-- Favorise la diversité génétique
-- Brise la convergence prématurée observée en TEST 1
-
-Mutation rate augmentée de 0.08 à 0.12 (TEST 3 vs TEST 4) :
-- Améliore performances GA en VRPTW
-- data1202 : 1948.61 → 1970.39 (léger recul)
-- data201 : 1977.78 → 1910.61 (amélioration)
-- Apporte flexibilité pour VRPTW
-
-#### Tabu Search : paramètres fins
-
-Tabu tenure et neighborhood size :
-- Tenure 12, neighborhood 150 (TEST 4) : configuration équilibrée
-- Évite oscillation (tenure trop court) et blocage (tenure trop long)
-- Neighborhood 150 explore suffisamment sans coût prohibitif
-
-### 7.4 Robustesse et faisabilité
-
-Tous les tests produit des solutions faisables à 100% :
-- Respect des contraintes de capacité : validé
-- Respect des fenêtres de temps : validé
-- Couverture complète de clients : validé
-
-Pas de solutions infaisables observées, démontrant la robustesse des opérateurs de voisinage et des initialisateurs.
+Pendant notre développement, de nombreux problèmes de faisabilité ont mené à un retard dans le projet (et donc moins de temps pour effectuer les tests...) Cependant les algorithmes présentent donc des résultats qui respectent bien les contraintes. 
 
 ---
 
@@ -574,46 +546,19 @@ Pas de solutions infaisables observées, démontrant la robustesse des opérateu
 
 ### 8.1 Synthèse des résultats
 
-Algorithme Génétique :
-- Adapté aux problèmes de taille moyenne (100 clients)
-- Exploration large de l'espace de solutions
-- Amélioration progressive avec plus de générations
-- Performance accrue quand mutation_rate est augmentée pour VRPTW
+En résumé, La recherche Taboue à été supérieure dans la plupart des tests, cependant nous avons pu remarquer que plus les problèmes se complexifiaient et les puissances de calculs des algorithmes augmentaient, plus l'écart des résultats entre les deux algorithmes se resserraient. L'algorithme génétique, pour peu que la puissance calculatoire de l'ordinateur soit suffisante, semble plus adapté pour être performant sur des configurations plus complexe
 
-Recherche Taboue :
-- Supérieure sur petites instances (50 clients)
-- Intensification rapide autour des optima locaux
-- Moins stable sur instances complexes
-- Très rapide (execution time ~1-2s)
+### 8.2 Améliorations futures possibles
 
-Verdict global :
-À nombre égal de véhicules, TS gagne 40% des cas en VRP, GA gagne 60% en moyenne. Sur VRPTW, parité quasi-parfaite (5/10 chacun).
-
-### 8.2 Recommandations pratiques
-
-1. Pour VRP pur (sans fenêtres de temps) : Préférer TS pour petits problèmes (<75 clients), GA pour moyens/gros problèmes
-2. Pour VRPTW : Combiner les approches ou utiliser GA avec mutation_rate élevée (>0.10)
-3. Temps de réponse critique : TS toujours plus rapide (~50% temps du GA)
-4. Qualité maximale : GA avec population 400 et 500 générations
-
-### 8.3 Améliorations futures possibles
-
-1. Hybridation : GA+TS (GA pour exploration globale, TS pour affinage local)
-2. Adaptativité des paramètres : Ajuster dynamiquement mutation_rate et tabu_tenure basé sur performance
-3. Parallélisation : Évaluation parallèle de la population (GA) ou du voisinage (TS)
-4. Opérateurs avancés : 3-opt, Lin-Kernighan pour TS; croisement adaptatif pour GA
-5. Mémorisation croisée : Utiliser solutions de TS pour initialiser GA et vice-versa
+Pour le futur, il serait pertinent de poursuivre les tests avec des pc plus puissants, des algorithmes optimisé, et peut être remplacer des opérateurs de voisinages plus pertinent. Peut être du 3-opt, Lin-Kernighan pour TS; croisement adaptatif pour GA ?)
+Nous pourrions aussi essayer de repartir d'une solution TS, qui est déjà très efficace, puis s'en servir comme solution initiale pour un GA.
 
 ### 8.4 Limitations du projet
 
-- Taille limitée des instances (max 100 clients) pour les tests
-- Fenêtres de temps non randomisées (données fixes)
-- Pas de multi-délivraison ou contraintes additionnelles
-- Pas de comparaison avec solveurs MILP optimums connus
-
+Du fait de la performance limité de nos ordinateurs, il est difficile d'obtenir des résultats très pertinent sans passer plusieurs jours a effectuer les calculs. Nos tests ont été effectué pour viser un temps d’exécution des séries de tests n’excédant pas 2h, mais en contrepartie les résultats (notamment sur le GA) est probablement sous évalué.
 ### 8.5 Conclusion finale
 
-Ce projet démontre que deux métaheuristiques différentes peuvent produire des résultats complémentaires sur le problème VRPTW. La Recherche Taboue excelle en optimisation locale rapide, tandis que l'Algorithme Génétique propose une meilleure exploration globale. Le choix entre les deux dépend fortement de la nature de l'instance (taille, structure spatiale, contraintes) et des objectifs du décideur (temps vs qualité).
+Ce projet démontre que deux métaheuristiques différentes peuvent produire des résultats complémentaires sur le problème VRPTW. La Recherche Taboue excelle en optimisation rapide, tandis que l'Algorithme Génétique propose une meilleure exploration globale. Le choix entre les deux dépend fortement de la nature de l'instance (taille, structure spatiale, contraintes) et des objectifs du décideur (temps vs qualité).
 
 Les configurations finales validées (GA : 400 pop, 500 gen, 0.12 mutation ; TS : 2000 iter, tenure 12, neighborhood 150) constituent une base solide pour résoudre des instances réelles du VRPTW.
 
@@ -628,25 +573,38 @@ numpy==1.24.3
 matplotlib==3.7.1
 pandas==2.1.0
 scipy==1.10.1
+folium==0.14.0
 ```
 
 ### Installation
 
+depuis la racine du projet : 
+
 ```bash
+python -m venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Modification des hyperparamètres :
+
+il suffit d'aller modifier les valeurs présents dans `src/hyperparameters.py` 
+
 ### Exécution des tests
+
+Dans la racine du projet, lancer :
 
 ```bash
 python run_experiments.py
 ```
 
-Les résultats sont sauvegardés dans `results/comprehensive_results.json` et les graphiques dans `results/plots/`.
-
+Les résultats sont sauvegardés dans `results/test{i}/comprehensive_results.json` et les graphiques dans `results/test{i}/plots/`. Pour chaque datasets, on peut également visualiser le résultats des deux métaheuristiques trouvé en mode VRP/VRPTW dans `results/test{i}/solutions/data{XXX}`
 ### Structure des fichiers
 
 ```
+run_experiments.py           # fichier python pour tester
+data/                        # Les datasets
+results/                     # emplacements des résultats des tests
 src/
   models.py                  # Structures de données (Solution, Route, Client, etc.)
   genetic_algorithm.py       # Implémentation GA

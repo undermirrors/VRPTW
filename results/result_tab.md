@@ -545,6 +545,7 @@ scipy==1.10.1
 ### Installation
 
 depuis la racine du projet : 
+
 ```bash
 python -m venv
 source venv/bin/activate
@@ -555,7 +556,9 @@ pip install -r requirements.txt
 
 il suffit d'aller modifier les valeurs présents dans `src/hyperparameters.py` 
 ### Exécution des tests
+
 Dans la racine du projet, lancer :
+
 ```bash
 python run_experiments.py
 ```
