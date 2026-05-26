@@ -40,6 +40,7 @@ Le VRPTW peut être formalisé comme un problème de programmation mathématique
 
 #### Variable de décisions et fonction objectif
 Pour définir une solution, nous avons ces variables de décisions : 
+
 - $x_{ijk} \in {0,1}$, qui est un booléen valant 1 si le véhicule k traverse l'arc (i,j), 0 sinon.
 - $t_i$ l'instant d'arrivée au nœud i
 - $r_i$ l'instant de début de service au nœud i
@@ -73,6 +74,7 @@ Un véhicule doit pouvoir arriver dans la fenêtre de temps du voisin suivant
 ### 2.2 Structures de données utilisées
 
 Pour fonctionner, nous avons implémenté plusieurs structures essentiels pour la recherche d'une solution optimisé :
+
 - `Location`, représentant les coordonnées cartésiennes (x, y) d'un nœud.
 - `TimeWindow`, qui est l'intervalle $[a_i, b_i]$ pour la contrainte de temps.
 - `Client` représente un client avec une `Location`, la quantité demandé $q_i$, une `TimeWindow`, et le temps nécessaire à la livraison `s_i`.
@@ -120,6 +122,7 @@ TOURNAMENT_SIZE
 ##### Sélection
 
 Pour chaque itération, deux parents vont être sélectionnés par "tournoi". Pour ce faire :
+
 - On sélectionne aléatoirement t individus de la population (TOURNAMENT_SIZE = t)
 - On choisi ensuite la meilleure solution parmi ces t individus. 
 - Ce processus est répété pour obtenir 2 parents
@@ -269,6 +272,7 @@ Les différences entre les datasets non visible dans ce tableau résident dans l
 ### 5.2 Evolution du protocole de tests
 
 De nombreuses séries de tests ont été exécutées pour affiner le modèle, jusqu’à arriver à notre protocole actuel, qui consiste à :
+
 - Sélectionner les hyperparamètres (via `src/hyperparameters.py`)
 - On lance un tests sur chaque metaheuristique, pour chaque dataset, dans la version VRP (sans fenêtre de temps) et VRPTW (avec fenêtre de temps).
 - Pour chaque dataset, on génère des plots des solutions trouvé par nos algorithmes et des performances de chacun, et on fait un tableau comparatifs de nos solutions.
@@ -531,16 +535,19 @@ Les fenêtres de temps rendent le problème significativement plus difficile. Le
 #### Impact des fenêtres de temps
 
 Distance supplémentaire due aux fenêtres :
+
 - data101 : 1005.67 (VRP) → 1823.19 (VRPTW) = +81%
 - data201 : 794.07 (VRP) → 1401.06 (VRPTW) = +76%
 
 Nombre de véhicules nécessaires :
+
 - VRP : moyenne ~5 véhicules
 - VRPTW : moyenne ~19 véhicules
 
 #### Performance comparative
 
 Tabu Search reste dominant en VRPTW moyenne-petite (TEST 4) :
+
 - Meilleur sur data101, data102, data1101, data1102, data111
 - L'intensification de la recherche locale aide à respecter les fenêtres
 
