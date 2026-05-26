@@ -48,7 +48,8 @@ Notre objectif sera dès lors de minimiser la distance total parcouru par les v�
 	$Z = \sum_i\sum_j\sum_k d(i,j) × x_{ijk}$
 
 #### Contraintes 
-Nous disposons également de contraintes :  
+Nous sommes également soumis à des contraintes :  
+
 ##### Contrainte 1 :
 Chaque client est visité exactement une fois
 	$\sum_j\sum_k x_{ijk} = 1, \forall i \in  C$
@@ -92,11 +93,12 @@ Pour une solution donnée, trois indicateurs vont être pris en compte pour comp
 
 #### Principes fondamentaux
 
-L'algorithme génétique s'inspire de l'évolution naturelle. À partir d'une population initiale de solutions, il crée itérativement une nouvelle génération en effectuant ces étapes : 
+L'algorithme génétique s'inspire de la théorie de l'évolution. À partir d'une population initiale de solutions, il crée itérativement une nouvelle génération en effectuant ces étapes : 
+
 - On sélectionne les meilleurs individus de la génération précédentes.
 - On effectue les croisements (reproduction avec recombination)
 - Puis les mutations
-- Enfin, on remplace remplis la nouvelle générations a partir des nouvelles solutions (individus), en gardant les meilleurs solutions.
+- Enfin, on remplace la nouvelle générations a partir des nouvelles solutions (individus), en gardant les meilleurs solutions.
 
 La population initiale de taille POPULATION_SIZE sera générée à partir de la solution initiale, elle-même générée en utilisant le générateur de solutions décrit dans la section 4.
 
@@ -132,7 +134,7 @@ Le croisement a pour objectif de générer un enfant à partir de deux parents :
 - Ensuite, on copie le segment $[p1, p2]$ du parent 1 vers l'enfant
 - Enfin, on rempli les positions restantes en utilisant l'ordre du parent 2, en respectant les clients déjà présents et en effectuant les mappages cycliques nécessaires.
 
-Pour limiter la diversité (qui mènerai a des générations qui ne conserve pas assez les bonnes solutions), on applique une probabilité d'application CROSSOVER_RATE.
+Pour limiter la diversité (qui mènerais à des générations ne conservant pas assez les bonnes solutions), on applique une probabilité d'application CROSSOVER_RATE.
 
 ##### Mutation
 
@@ -159,6 +161,7 @@ Enfin, l'algorithme s'exécutera pour un nombre fixe de générations défini pa
 La Recherche Taboue est un algorithme de recherche locale avec mémoire taboue qui échappe aux optima locaux en interdisant temporairement certains mouvements.
 
 La solution initiale sera générée en utilisant le générateur de solutions décrit dans la section 4.
+
 #### Opérateurs de voisinage
 
 De la même façon que notre algorithme génétique, notre recherche Taboue utilise des hyperparamètres, défini également dans `src/hyperparameters.py`, pour faciliter la modification du comportement de l'algorithme.
@@ -181,9 +184,11 @@ Le voisinage est généré en utilisant plusieurs mouvements de base :
 #### Gestion de la mémoire taboue
 
 Pour le bon fonctionnement de l'algorithme Taboue, nous utilisons plusieurs variables :
+
 - Une liste taboue, qui contient les derniers mouvements interdits avec la durée qui défini depuis quand le mouvement est interdit.
 - Un Tabu tenure, qui est la durée pendant laquelle un mouvement reste interdit (TABU_TENURE). Un mouvement est marqué comme taboue s'il figure dans la liste taboue.
 - Et un critère d'aspiration, qui défini si un mouvement taboué peut être accepté s'il conduit à une solution meilleure que la meilleure solution trouvée jusqu'à présent (ASPIRATION_CRITERIA)
+
 #### Sélection du meilleur voisin
 
 Pour selectionner le meilleur voisin, on filtre dans une premier temps les solutions faisables (respect des contraintes), puis on évalue chaque voisin non-taboué ou satisfaisant le critère d'aspiration (si activé), et enfin on choisi le voisin avec la meilleure fonction objectif.
@@ -202,6 +207,7 @@ L'algorithme s'exécute pour MAX_ITERATIONS iterations.
 ### 4.1 Générateurs de solutions initiales
 
 Pour que nos algorithmes fonctionnent, nous utilisons un générateur de solutions pour que nos métaheuristiques puissent avoir un point de départ. Pour ce faire, notre générateur va s'appuyer sur deux algorithmes.
+
 #### Nearest-Neighbor
 
 C'est un algorithme glouton relativement simple :
@@ -211,12 +217,15 @@ C'est un algorithme glouton relativement simple :
    - On crée une nouvelle route
    - Tant que la route n'est pas pleine et qu'il reste des clients :
      - On trouve le client non assigné le plus proche de la dernière position, puis on l'ajouter s'il respecte les contraintes (capacité et fenêtres de temps). Le cas échéant, on passe à la route suivante.
+
 #### Random Solution
 
 Si le Nearest-Neighbor ne fonctionne pas, on passe sur une heuristique aléatoire. Dès lors, on permuter aléatoirement l'ordre des clients, et on assigne ensuite chaque client séquentiellement à la première route l'acceptant (capacité + fenêtres respectées)
+
 ### 4.2 Opérateurs de voisinage
 
 Pour définir quelle solution est voisine d'une autre, il faut des opérateurs pour les relier. Nous avons défini trois opérateurs de voisinages qui nous semblaient pertinent. 
+
 #### 2-opt
 
 Le 2-opt est caractérisé par un déplacement d'un segment de route à un autre endroit de cette même route  :
@@ -256,6 +265,7 @@ Pour effectuer nos tests, nous disposons de dix instances de test couvrant diff�
 | data202  | 1000                   | 1000                        |
 
 Les différences entre les datasets non visible dans ce tableau résident dans les différences entre les fenêtres de temps et les positions de chacun des clients.
+
 ### 5.2 Evolution du protocole de tests
 
 De nombreuses séries de tests ont été exécutées pour affiner le modèle, jusqu’à arriver à notre protocole actuel, qui consiste à :
@@ -265,6 +275,7 @@ De nombreuses séries de tests ont été exécutées pour affiner le modèle, ju
 
 Dans la suite de ce rapport, nous allons comparer 4 séries de tests effectués, en variant nos hyperparamètres.
 N'ayant pas eu le temps de faire des séries de tests conséquents, certains hyperparamètres n'ont pas été réellement tester, par conséquents les tests présentés ici seront systématiquement avec `TS_DEFAULT_ASPIRATION_CRITERIA = True`.
+
 #### TEST 1
 
 L'objectif était d'établir un premier tests avec des hyperparamètres très modérés, pour une vitesse d’exécution très rapide.
@@ -282,6 +293,7 @@ TS_DEFAULT_NEIGHBORHOOD_SIZE = 100
 ```
 
 Nous obtenons dès lors ces résultats : 
+
 #### VRP (sans fenêtres de temps)
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
@@ -339,6 +351,7 @@ TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 Le passage à population = 400 et tournament = 2 aide à casser la convergence prématurée, tandis que mutation = 0.08 réinjecte bien plus de nouveauté sans rendre l’évolution chaotique. nous avons également augmenté le nombre de génération à 500. Le tournament size à également été réduit pour augmenter la flexibilité.
 
 Côté TS, nous avons bien augmenté le nombre d'itérations maximal à 2000 pour tenter de l'affiner, et neighborhood = 150 te donne plus d’options locales. Nous avons également ajouté un Tabu tenure à 10 pour conserver la liste taboué sur au moins 10 itérations.
+
 #### VRP
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
@@ -392,6 +405,7 @@ TS_DEFAULT_MAX_ITERATIONS = 2000
 TS_DEFAULT_TABU_TENURE = 10
 TS_DEFAULT_NEIGHBORHOOD_SIZE = 150
 ```
+
 #### VRP
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
@@ -448,6 +462,7 @@ TS_DEFAULT_ASPIRATION_CRITERIA = True
 ```
 
 Pour le GA, nous avons augmenté le taux de mutation à 0.12 (et finalement remis le nombre de générations à 500 pour être en cohérence avec ce taux), et pour le TS nous avons simplement augmenté la tabu tenure à 12 (le max_iterations ne semblant pas influer plus que ça sur le résultat). Nous avons dès lors obtenu ces résultats :
+
 #### VRP
 
 | Problem  | GA Distance | GA Vehicles | TS Distance | TS Vehicles |
@@ -494,7 +509,7 @@ Nous obtenons dès lors ce graphe :
 
 #### Tendances générales
 
-De manière générale, le TS dominer fortement  domine pour les problèmes avec les temps d'ouverture du dépots restreints (data101, data102, data111, data112), TS gagne constamment sur ces instances.
+De manière générale, le TS domine fortement pour les problèmes avec les temps d'ouverture du dépots restreints (data101, data102, data111, data112), TS gagne constamment sur ces instances.
 
 L'algorithme génétique quant à lui s'est montré peu efficace dans les premiers essais, et nécessite des temps de calculs bien plus importants pour être efficace. Cependant, celui-ci, si bien configuré, semble pouvoir s'améliorer continuellement, à condition de lui donner un nombre de génération conséquent (et donc du temps et un pc puissant, ce que nous n'avions pas)
 
@@ -530,6 +545,7 @@ Tabu Search reste dominant en VRPTW moyenne-petite (TEST 4) :
 - L'intensification de la recherche locale aide à respecter les fenêtres
 
 L'algorithme génétique semble cependant plus compétitif la encore sur des instances complexes, (pour peu qu'on lui donne le nombre de génération nécessaire...)
+
 ### 7.3 Impact des hyperparamètres
 
 #### Population et Générations du GA
@@ -555,7 +571,8 @@ Nous pourrions aussi essayer de repartir d'une solution TS, qui est déjà très
 
 ### 8.4 Limitations du projet
 
-Du fait de la performance limité de nos ordinateurs, il est difficile d'obtenir des résultats très pertinent sans passer plusieurs jours a effectuer les calculs. Nos tests ont été effectué pour viser un temps d’exécution des séries de tests n’excédant pas 2h, mais en contrepartie les résultats (notamment sur le GA) est probablement sous évalué.
+Du fait de la performance limité de nos ordinateurs, il est difficile d'obtenir des résultats très pertinent sans passer plusieurs jours a effectuer les calculs. Nos tests ont été effectué pour viser un temps d’exécution des séries de tests n’excédant pas 2h, mais en contrepartie les résultats (notamment sur le GA) sont probablement sous évalués.
+
 ### 8.5 Conclusion finale
 
 Ce projet démontre que deux métaheuristiques différentes peuvent produire des résultats complémentaires sur le problème VRPTW. La Recherche Taboue excelle en optimisation rapide, tandis que l'Algorithme Génétique propose une meilleure exploration globale. Le choix entre les deux dépend fortement de la nature de l'instance (taille, structure spatiale, contraintes) et des objectifs du décideur (temps vs qualité).
@@ -599,6 +616,7 @@ python run_experiments.py
 ```
 
 Les résultats sont sauvegardés dans `results/test{i}/comprehensive_results.json` et les graphiques dans `results/test{i}/plots/`. Pour chaque datasets, on peut également visualiser le résultats des deux métaheuristiques trouvé en mode VRP/VRPTW dans `results/test{i}/solutions/data{XXX}`
+
 ### Structure des fichiers
 
 ```
